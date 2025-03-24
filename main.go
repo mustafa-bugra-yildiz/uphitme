@@ -3,16 +3,14 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"html/template"
 	"log"
 	"net/http"
 
 	"github.com/mustafa-bugra-yildiz/uphitme/env"
+	"github.com/mustafa-bugra-yildiz/uphitme/page"
 
 	_ "github.com/lib/pq"
 )
-
-var tmpl = template.Must(template.ParseFiles("templates.html"))
 
 func main() {
 	log.Println("Connecting the database")
@@ -22,6 +20,13 @@ func main() {
 	}
 	defer db.Close()
 	log.Println("Connected the database")
+
+	var version string
+	err = db.QueryRow("SELECT version()").Scan(&version)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Database version is", version)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", landingPageHandler)
@@ -38,7 +43,7 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func landingPageHandler(w http.ResponseWriter, r *http.Request) {
-	err := tmpl.ExecuteTemplate(w, "landing-page", nil)
+	err := page.Landing(w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

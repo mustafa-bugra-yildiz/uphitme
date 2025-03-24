@@ -8,10 +8,7 @@ WORKDIR /src
 	COPY . .
 	RUN go build -v -o uphitme .
 
-FROM alpine
+FROM scratch
 WORKDIR /app
-
-	COPY --from=builder /src/uphitme   /app/uphitme
-	COPY                templates.html /app/templates.html
-
-	CMD ["/app/uphitme"]
+COPY --from=builder /src/uphitme /app/uphitme
+CMD ["/app/uphitme"]
