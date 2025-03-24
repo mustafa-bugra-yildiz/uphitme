@@ -1,27 +1,34 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
+	"html/template"
 	"log"
 	"net/http"
-	"os"
-	"html/template"
+
+	"github.com/mustafa-bugra-yildiz/uphitme/env"
+
+	_ "github.com/lib/pq"
 )
 
 var tmpl = template.Must(template.ParseFiles("templates.html"))
 
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3000"
+	log.Println("Connecting the database")
+	db, err := sql.Open("postgres", env.DatabaseURL)
+	if err != nil {
+		log.Fatal(err)
 	}
+	defer db.Close()
+	log.Println("Connected the database")
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", landingPageHandler)
 	mux.HandleFunc("/health", healthHandler)
 
-	log.Printf("Starting server on port %s", port)
-	log.Fatal(http.ListenAndServe(":"+port, mux))
+	log.Printf("Starting server on port %s", env.Port)
+	log.Fatal(http.ListenAndServe(":"+env.Port, mux))
 }
 
 func healthHandler(w http.ResponseWriter, r *http.Request) {

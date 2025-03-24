@@ -1,2 +1,8 @@
-/tmp
+# macOS produces this file
 .DS_Store
+
+# github.com/air-verse/air produces this file
+/tmp
+
+# please don't commit this file
+.env
