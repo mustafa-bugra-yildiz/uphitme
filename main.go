@@ -2,12 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"log"
 	"net/http"
 
 	"github.com/mustafa-bugra-yildiz/uphitme/env"
-	"github.com/mustafa-bugra-yildiz/uphitme/page"
+	"github.com/mustafa-bugra-yildiz/uphitme/router"
 
 	_ "github.com/lib/pq"
 )
@@ -28,23 +27,6 @@ func main() {
 	}
 	log.Println("Database version is", version)
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", landingPageHandler)
-	mux.HandleFunc("/health", healthHandler)
-
 	log.Printf("Starting server on port %s", env.Port)
-	log.Fatal(http.ListenAndServe(":"+env.Port, mux))
-}
-
-func healthHandler(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(map[string]any{
-		"status": "ok",
-	})
-}
-
-func landingPageHandler(w http.ResponseWriter, r *http.Request) {
-	err := page.Landing(w)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	log.Fatal(http.ListenAndServe(":"+env.Port, router.New()))
 }
