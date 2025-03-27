@@ -28,8 +28,8 @@ func New(
 	scheduler *scheduler.Scheduler,
 ) http.Handler {
 	s := state{
-		taskRepo: taskRepo,
-		userRepo: userRepo,
+		taskRepo:  taskRepo,
+		userRepo:  userRepo,
 		scheduler: scheduler,
 	}
 

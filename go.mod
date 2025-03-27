@@ -5,6 +5,7 @@ go 1.24.0
 require (
 	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.7.4
+	go.uber.org/mock v0.5.0
 	golang.org/x/sync v0.12.0
 )
 

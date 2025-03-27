@@ -2,19 +2,35 @@ package router
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/mustafa-bugra-yildiz/uphitme/mocks/userapp"
+	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
+	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
+	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
+	"go.uber.org/mock/gomock"
 )
 
 func TestHealthWorks(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	taskRepo := task.NewMockRepo(ctrl)
+	userRepo := user.NewMockRepo(ctrl)
+
+	taskRepo.EXPECT().ListPending(gomock.Any()).Times(1)
+	scheduler, _ := scheduler.New(context.Background(), taskRepo)
+
 	req := httptest.NewRequest(http.MethodGet, "/health", nil)
 
 	res := httptest.NewRecorder()
-	New().ServeHTTP(res, req)
+	New(taskRepo, userRepo, scheduler).ServeHTTP(res, req)
 
 	got, _ := io.ReadAll(res.Body)
 	got = bytes.TrimSpace(got)
@@ -26,28 +42,64 @@ func TestHealthWorks(t *testing.T) {
 }
 
 func TestImmediateSchedulingWorks(t *testing.T) {
-	handler := http.NewServeMux()
+	ctrl := gomock.NewController(t)
+	taskRepo := task.NewMockRepo(ctrl)
+	userRepo := user.NewMockRepo(ctrl)
 
-	f, isCalled := helloJob(t)
-	handler.HandleFunc("/jobs/hello", f)
+	taskRepo.EXPECT().ListPending(gomock.Any()).Times(1)
+	scheduler_, _ := scheduler.New(context.Background(), taskRepo)
 
-	server := httptest.NewServer(handler)
-	defer server.Close()
+	userApp := userapp.New(t)
+	defer userApp.Close(t)
+
+	id := uuid.New()
+	target, _ := url.Parse(userApp.URL() + "/jobs/hello")
+	payload := map[string]any{
+		"message": "hello world",
+	}
 
 	req := httptest.NewRequest(
 		http.MethodPost,
 		"/api/schedule",
-		payload(t, map[string]any{
-			"title":  "Call me back with \"hello world\"",
-			"target": server.URL + "/jobs/hello",
-			"payload": map[string]any{
-				"message": "hello world",
-			},
+		makePayload(t, map[string]any{
+			"title":   "Call me back with \"hello world\"",
+			"target":  target.String(),
+			"payload": payload,
 		}),
 	)
 
+	taskRepo.EXPECT().
+		Create(
+			gomock.Any(),
+			gomock.Eq("Call me back with \"hello world\""),
+			gomock.Eq(*target),
+			gomock.Eq(payload),
+		).
+		Return(id, nil).
+		Times(1)
+	userApp.ExpectHello()
+
+	taskRepo.EXPECT().
+		Get(gomock.Any(), gomock.Eq(id)).Times(1).
+		Return(
+			&task.Task{
+				ID:      id,
+				Target:  *target,
+				Payload: payload,
+			},
+			nil,
+		)
+	taskRepo.EXPECT().
+		Succeed(
+			gomock.Any(),
+			gomock.Eq(id),
+			gomock.Eq(http.StatusOK),
+			gomock.Eq(map[string]any{"status": "okay"}),
+		).
+		Times(1)
+
 	res := httptest.NewRecorder()
-	New().ServeHTTP(res, req)
+	New(taskRepo, userRepo, scheduler_).ServeHTTP(res, req)
 
 	{
 		got := res.Code
@@ -72,42 +124,11 @@ func TestImmediateSchedulingWorks(t *testing.T) {
 		}
 	}
 
+	// wait for the hello job to be called
 	time.Sleep(time.Second)
-	if !*isCalled {
-		t.Errorf("/jobs/hello was never called")
-	}
 }
 
-func helloJob(t *testing.T) (func(w http.ResponseWriter, r *http.Request), *bool) {
-	isCalledValue := false
-	isCalled := &isCalledValue
-
-	handler := func(w http.ResponseWriter, r *http.Request) {
-		t.Helper()
-
-		var payload struct {
-			Message string `json:"message"`
-		}
-		err := json.NewDecoder(r.Body).Decode(&payload)
-		if err != nil {
-			t.Errorf("/jobs/hello: %q", err)
-		}
-
-		got := payload.Message
-		want := "hello world"
-
-		if got != want {
-			t.Errorf("/jobs/hello:\ngot:  %s\nwant: %s", got, want)
-		}
-
-		*isCalled = true
-		w.Write([]byte("Gotta return 200"))
-	}
-
-	return handler, isCalled
-}
-
-func payload(t *testing.T, v any) io.Reader {
+func makePayload(t *testing.T, v any) io.Reader {
 	t.Helper()
 
 	marshaled, err := json.Marshal(v)

@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
+//go:generate mockgen -typed -package task -destination mock.go . Repo
 type Repo interface {
 	Count(ctx context.Context) (int, error)
 	List(ctx context.Context, page, pageSize int) ([]Task, error)

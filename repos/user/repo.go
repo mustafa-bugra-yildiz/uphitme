@@ -1,12 +1,13 @@
 package user
 
 import (
-	"time"
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 )
 
+//go:generate mockgen -typed -package user -destination mock.go . Repo
 type Repo interface {
 	Get(ctx context.Context, email string) (*User, error)
 	Create(
