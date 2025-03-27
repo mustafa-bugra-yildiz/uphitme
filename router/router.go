@@ -2,8 +2,11 @@ package router
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"net/http"
+	"net/url"
+	"strings"
 
 	"github.com/mustafa-bugra-yildiz/uphitme/middleware"
 	"github.com/mustafa-bugra-yildiz/uphitme/page"
@@ -21,7 +24,7 @@ func New(taskRepo task.Repo) http.Handler {
 	mux.HandleFunc("/", landingPageHandler)
 	mux.HandleFunc("/dashboard", s.dashboardPageHandler)
 	mux.HandleFunc("/health", healthHandler)
-	mux.HandleFunc("/api/schedule", scheduleHandler)
+	mux.HandleFunc("/api/schedule", s.scheduleHandler)
 
 	return middleware.Logger(mux)
 }
@@ -52,11 +55,11 @@ func (s state) dashboardPageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func scheduleHandler(w http.ResponseWriter, r *http.Request) {
+func (s state) scheduleHandler(w http.ResponseWriter, r *http.Request) {
 	var req struct {
-		Title   string         `json:"title"`
-		Target  string         `json:"target"`
-		Payload map[string]any `json:"payload"`
+		Title   string       `json:"title"`
+		Target  string       `json:"target"`
+		Payload task.Payload `json:"payload"`
 	}
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
@@ -64,9 +67,30 @@ func scheduleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	target, err := url.Parse(req.Target)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	taskID, err := s.taskRepo.Create(
+		r.Context(),
+		strings.TrimSpace(req.Title),
+		*target,
+		req.Payload,
+	)
+
 	go func() {
+		status := task.Failed
+		defer s.taskRepo.SetStatus(context.Background(), taskID, status)
+
 		payload, _ := json.Marshal(req.Payload)
-		http.Post(req.Target, "application/json", bytes.NewBuffer(payload))
+		_, err = http.Post(req.Target, "application/json", bytes.NewBuffer(payload))
+		if err != nil {
+			return
+		}
+
+		status = task.Succeeded
 	}()
 
 	msg := "task scheduled, we will call you back"

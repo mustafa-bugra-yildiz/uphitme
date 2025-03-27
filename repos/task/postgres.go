@@ -24,6 +24,7 @@ func (p postgres) List(ctx context.Context, page, pageSize int) ([]Task, error) 
 			id, created_at, updated_at,
 			status, title, target, payload
 		FROM tasks
+		ORDER BY created_at DESC
 		OFFSET $1
 		LIMIT $2
 	`
@@ -88,7 +89,7 @@ func (p postgres) Create(
 		return uuid.Nil, fmt.Errorf("task.Repo.Create: %w", err)
 	}
 
-	_, err = p.db.ExecContext(
+	result, err := p.db.ExecContext(
 		ctx, query,
 		id, title, target.String(), payloadBytes,
 	)
@@ -96,5 +97,40 @@ func (p postgres) Create(
 		return uuid.Nil, fmt.Errorf("task.Repo.Create: %w", err)
 	}
 
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return uuid.Nil, fmt.Errorf("task.Repo.Create: %w", err)
+	}
+	if affected == 0 {
+		return uuid.Nil, fmt.Errorf("task.Repo.Create: no rows affected by insert")
+	}
+
 	return id, nil
+}
+
+func (p postgres) SetStatus(
+	ctx context.Context,
+	taskID uuid.UUID,
+	status Status,
+) error {
+	query := `
+		UPDATE tasks
+		SET status = $2
+		WHERE id = $1
+	`
+
+	result, err := p.db.ExecContext(ctx, query, taskID, status)
+	if err != nil {
+		return fmt.Errorf("task.Repo.SetStatus: %w", err)
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("task.Repo.SetStatus: %w", err)
+	}
+	if affected == 0 {
+		return fmt.Errorf("task.Repo.SetStatus: no rows affected by update")
+	}
+
+	return nil
 }

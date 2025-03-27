@@ -16,6 +16,7 @@ type Repo interface {
 		target url.URL,
 		payload Payload,
 	) (uuid.UUID, error)
+	SetStatus(ctx context.Context, taskID uuid.UUID, status Status) error
 }
 
 type Task struct {

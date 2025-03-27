@@ -81,6 +81,7 @@
 	<div>
 		{{ range .tasks }}
 			<div>
+				<p><b>{{ .ID.String }}</b></p>
 				<p>{{ .Status }}: {{ .Title }}</p>
 				<p>{{ .Target.String }}</p>
 				<code>
