@@ -7,158 +7,417 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>uphit.me - Task Scheduling Made Easy</title>
 	<style>
-		body {
-			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-			background-color: #f4f4f4;
+		/* Basic Reset */
+		* {
 			margin: 0;
 			padding: 0;
+			box-sizing: border-box;
+		}
+
+		/* Body */
+		body {
+			font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+			background-color: #fff;
 			display: flex;
 			justify-content: center;
-			align-items: center;
+			align-items: flex-start;
 			min-height: 100vh;
 			color: #333;
-		}
-
-		.container {
-			width: 100%;
-			max-width: 900px;
-			padding: 20px;
-			box-sizing: border-box;
-			background-color: #fff;
-			border-radius: 8px;
-			box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-			overflow: hidden;
-			display: flex;
-			flex-direction: column;
-		}
-
-		.task {
-			padding: 16px;
-			border-bottom: 1px solid #eee;
-			display: grid;
-			grid-template-columns: auto 1fr;
-			gap: 16px;
-			align-items: center;
-		}
-
-		.task p {
-			margin: 0;
-			font-size: 14px;
+			padding: 20px 10px;
 			line-height: 1.5;
 		}
 
-		.task code {
-			display: block;
-			background-color: #f7f7f7;
-			border-radius: 4px;
-			padding: 10px;
-			font-size: 12px;
-			overflow-x: auto;
-			margin-top: 10px;
+		/* Container */
+		.container {
+			width: 100%;
+			max-width: 900px;
+			padding: 40px;
+			background-color: #fff;
+			overflow: hidden;
 		}
 
+		/* Header */
+		.header {
+			margin-bottom: 30px;
+		}
+
+		.header h1 {
+			font-size: 24px;
+			color: #111;
+			margin-bottom: 4px;
+			font-weight: 600;
+		}
+
+		.header p {
+			color: #666;
+			font-size: 14px;
+		}
+
+		/* Task Item */
+		.task {
+			padding: 20px 0;
+			border-bottom: 1px solid #eee;
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+		}
+
+		.task:last-child {
+			border-bottom: none;
+		}
+
+		/* Status Icon */
 		.task .status {
-			font-size: 20px;
+			width: 24px;
+			height: 24px;
+			border-radius: 50%;
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			width: 30px;
-			height: 30px;
-			border-radius: 50%;
-			background-color: #f4f4f4;
+			font-size: 12px;
+			flex-shrink: 0;
 		}
 
-		.task .status.pending {
-			background-color: #f39c12;
+		/* Status Icon - FontAwesome */
+		.task .status.pending i {
+			color: #f0b429;
 		}
 
-		.task .status.failed {
-			background-color: #e74c3c;
+		.task .status.failed i {
+			color: #e12d39;
 		}
 
-		.task .status.succeeded {
-			background-color: #2ecc71;
+		.task .status.succeeded i {
+			color: #0ca678;
 		}
 
-		.task .status i {
-			color: white;
-			font-size: 16px;
-		}
-
+		/* Title */
 		.task .title {
-			font-size: 18px;
-			font-weight: bold;
-			color: #333;
+			font-size: 16px;
+			font-weight: 600;
+			color: #111;
 		}
 
+		/* Target */
+		.task .target {
+			font-size: 14px;
+			color: #555;
+		}
+
+		/* Time */
+		.task .time {
+			font-size: 12px;
+			color: #777;
+		}
+
+		.task .time p {
+			margin: 2px 0;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+		}
+
+		.task .time i {
+			color: #999;
+			width: 14px;
+			text-align: center;
+		}
+
+		/* Task Details */
+		.task p {
+			color: #555;
+			font-size: 14px;
+		}
+
+		/* Code Block */
+		.task code {
+			display: block;
+			background-color: #fafafa;
+			border-radius: 4px;
+			padding: 12px 16px;
+			font-size: 13px;
+			overflow-x: auto;
+			width: 100%;
+			line-height: 1.5;
+			border: 1px solid #eaeaea;
+			font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+			color: #333;
+			margin-top: 8px;
+		}
+
+		.task pre {
+			margin: 0;
+			white-space: pre-wrap;
+		}
+
+		/* Error & Result */
+		.task .error, .task .result {
+			font-size: 13px;
+			color: #333;
+			margin-top: 12px;
+			padding: 12px 16px;
+			background-color: #fafafa;
+			border-left: 3px solid #eaeaea;
+			border-radius: 0;
+		}
+
+		.task .error {
+			border-left-color: #e12d39;
+		}
+
+		.task .result {
+			border-left-color: #0ca678;
+		}
+
+		.task > .result > code {
+			background-color: transparent;
+			border: none;
+			padding: 0;
+			margin-top: 8px;
+		}
+
+		/* Flexbox Layout */
+		.flex {
+			display: flex;
+		}
+
+		.flex.space-between {
+			justify-content: space-between;
+		}
+
+		.gap-8 {
+			gap: 8px;
+		}
+
+		.flex-col {
+			flex-direction: column;
+		}
+
+		.gap-2 {
+			gap: 2px;
+		}
+
+		/* Pagination */
 		.pagination {
 			display: flex;
 			justify-content: center;
-			gap: 15px;
-			margin-top: 20px;
+			align-items: center;
+			margin-top: 30px;
 			font-size: 14px;
+			gap: 15px;
+		}
+
+		.pagination p {
+			color: #666;
+			font-weight: 400;
 		}
 
 		.pagination a {
 			text-decoration: none;
-			color: #007bff;
+			color: #3182ce;
+			font-size: 14px;
 			padding: 6px 12px;
-			border: 1px solid #007bff;
-			border-radius: 4px;
-			transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+			transition: all 0.2s ease;
+			font-weight: 400;
 		}
 
 		.pagination a:hover {
-			background-color: #007bff;
-			color: white;
+			text-decoration: underline;
 		}
 
-		.pagination p {
-			margin: 0;
-			line-height: 30px;
-			color: #333;
+		.items-center { align-items: center; }
+		.w-full { width: 100%; }
+		.justify-center { justify-content: center; }
+		
+		/* Section labels */
+		.section-label {
+			font-size: 12px;
+			color: #666;
+			margin-bottom: 4px;
+			font-weight: 500;
+		}
+
+		/* Tooltip styles */
+		[data-tooltip] {
+			position: relative;
+			cursor: help;
+		}
+
+		[data-tooltip]:hover::after {
+			content: attr(data-tooltip);
+			position: absolute;
+			top: -28px;
+			left: 50%;
+			transform: translateX(-50%);
+			background-color: #333;
+			color: white;
+			padding: 4px 8px;
+			border-radius: 4px;
+			font-size: 11px;
+			white-space: nowrap;
+			z-index: 10;
+		}
+
+		/* Mobile responsiveness - improved */
+		@media (max-width: 768px) {
+			.container {
+				padding: 20px 15px;
+			}
+
+			.task {
+				padding: 16px 0;
+				gap: 12px;
+			}
+
+			.task-header {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 8px;
+			}
+
+			.task-meta {
+				flex-direction: column;
+				width: 100%;
+			}
+
+			.task .time {
+				margin-top: 8px;
+				display: flex;
+				gap: 12px;
+				font-size: 11px;
+			}
+
+			.task .time p {
+				margin: 0;
+			}
+
+			.task code {
+				padding: 10px;
+				font-size: 12px;
+			}
+
+			.task .error, .task .result {
+				padding: 10px;
+				font-size: 12px;
+			}
+
+			.section-label {
+				font-size: 11px;
+			}
+
+			.pagination {
+				gap: 10px;
+			}
+
+			.pagination a, .pagination p {
+				font-size: 13px;
+			}
+			
+			/* Hide tooltips on mobile */
+			[data-tooltip]:hover::after {
+				display: none;
+			}
+		}
+
+		@media (max-width: 480px) {
+			.container {
+				padding: 15px 10px;
+			}
+
+			.header h1 {
+				font-size: 20px;
+			}
+
+			.header p {
+				font-size: 13px;
+			}
+
+			.task .title {
+				font-size: 15px;
+			}
+
+			.task .target {
+				font-size: 13px;
+			}
 		}
 	</style>
-	<!-- Add FontAwesome for icons -->
+	<!-- FontAwesome for icons -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+	<!-- Inter font -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
 </head>
 
 <body>
 	<div class="container">
+		<div class="header">
+			<h1>uphit.me Dashboard</h1>
+			<p>Monitor and manage your scheduled tasks</p>
+		</div>
+
 		{{ range .tasks }}
 		<div class="task">
-			<!-- Status icon -->
-			<div class="status {{ .Status }}">
-				{{ if eq .Status "pending" }}
+			<div class="flex gap-8 items-center w-full task-header">
+				<!-- Status Icon -->
+				<div class="status {{ .Status }}">
+					{{ if eq .Status "pending" }}
 					<i class="fas fa-clock"></i>
-				{{ else if eq .Status "failed" }}
+					{{ else if eq .Status "failed" }}
 					<i class="fas fa-times"></i>
-				{{ else if eq .Status "succeeded" }}
+					{{ else if eq .Status "succeeded" }}
 					<i class="fas fa-check"></i>
-				{{ end }}
+					{{ end }}
+				</div>
+				<div class="flex space-between w-full task-meta">
+					<div class="flex flex-col gap-2 justify-center">
+						<p class="title">{{ .Title }}</p>
+						<p class="target">{{ .Target.String }}</p>
+					</div>
+					<div class="time">
+						<p>
+							<i class="far fa-calendar-plus" data-tooltip="Created"></i>
+							{{ .CreatedAt.Format "Jan 2, 2006 3:04 PM" }}
+						</p>
+						<p>
+							<i class="fas fa-sync-alt" data-tooltip="Updated"></i>
+							{{ .UpdatedAt.Format "Jan 2, 2006 3:04 PM" }}
+						</p>
+					</div>
+				</div>
 			</div>
+
+			<!-- Request Payload -->
 			<div>
-				<p class="title">{{ .Title }}</p>
-				<p>{{ .Status }}</p>
-				<p><strong>Target:</strong> {{ .Target.String }}</p>
-				<code>{{ jsonMarshalIndent .Payload }}</code>
-				{{ if eq .Status "failed" }}
-				<p class="error"><strong>Error:</strong> {{ .Error }}</p>
-				{{ end }}
-				{{ if eq .Status "succeeded" }}
-				<p class="result"><strong>Result:</strong> {{ httpStatusText .Code }}</p>
-				<code>{{ jsonMarshalIndent .Body }}</code>
-				{{ end }}
+				<div class="section-label">Request Payload</div>
+				<code>
+					<pre>{{ jsonMarshalIndent .Payload }}</pre>
+				</code>
 			</div>
+
+			<!-- Conditional Content based on Status -->
+			{{ if eq .Status "failed" }}
+			<div class="error">
+				<p><strong>Error:</strong> {{ .Error }}</p>
+			</div>
+			{{ end }}
+
+			{{ if eq .Status "succeeded" }}
+			<div class="result">
+				<p><strong>Response:</strong> {{ .Code }} {{ httpStatusText .Code }}</p>
+				<code>
+					<pre>{{ jsonMarshalIndent .Body }}</pre>
+				</code>
+			</div>
+			{{ end }}
 		</div>
 		{{ end }}
+
 		<div class="pagination">
 			{{ if .prev }}
-			<a href="/dashboard?page={{ .prev }}">Prev</a>
+			<a href="/dashboard?page={{ .prev }}">← Previous</a>
 			{{ end }}
 			<p>Page {{ .page }}</p>
 			{{ if .next }}
-			<a href="/dashboard?page={{ .next }}">Next</a>
+			<a href="/dashboard?page={{ .next }}">Next →</a>
 			{{ end }}
 		</div>
 	</div>
