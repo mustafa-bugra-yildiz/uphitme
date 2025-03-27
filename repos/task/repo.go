@@ -16,7 +16,9 @@ type Repo interface {
 		target url.URL,
 		payload Payload,
 	) (uuid.UUID, error)
-	SetStatus(ctx context.Context, taskID uuid.UUID, status Status) error
+
+	Fail(ctx context.Context, taskID uuid.UUID, err error) error
+	Succeed(ctx context.Context, taskID uuid.UUID, code int, body Payload) error
 }
 
 type Task struct {
@@ -24,7 +26,11 @@ type Task struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 
-	Status  Status
+	Status Status
+	Error  *string
+	Code   *int     // http status
+	Body   *Payload // http body (JSON)
+
 	Title   string
 	Target  url.URL
 	Payload Payload

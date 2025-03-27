@@ -79,18 +79,28 @@ func (s state) scheduleHandler(w http.ResponseWriter, r *http.Request) {
 		*target,
 		req.Payload,
 	)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-	go func() {
-		status := task.Failed
-		defer s.taskRepo.SetStatus(context.Background(), taskID, status)
+	go func() error {
+		ctx := context.Background()
 
 		payload, _ := json.Marshal(req.Payload)
-		_, err = http.Post(req.Target, "application/json", bytes.NewBuffer(payload))
+		res, err := http.Post(req.Target, "application/json", bytes.NewBuffer(payload))
 		if err != nil {
-			return
+			return s.taskRepo.Fail(ctx, taskID, err)
+		}
+		defer res.Body.Close()
+
+		var body task.Payload
+		err = json.NewDecoder(res.Body).Decode(&body)
+		if err != nil {
+			return s.taskRepo.Fail(ctx, taskID, err)
 		}
 
-		status = task.Succeeded
+		return s.taskRepo.Succeed(ctx, taskID, res.StatusCode, body)
 	}()
 
 	msg := "task scheduled, we will call you back"

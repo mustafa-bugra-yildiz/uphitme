@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"html/template"
 	"io"
+	"net/http"
 
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
 )
@@ -21,6 +22,7 @@ var tmpl = template.Must(template.New("").
 			}
 			return string(bytes)
 		},
+		"httpStatusText": http.StatusText,
 	}).
 	Parse(templates),
 )
