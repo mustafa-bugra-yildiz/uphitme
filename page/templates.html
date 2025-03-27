@@ -1,5 +1,4 @@
 {{ define "landing-page" }}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -66,6 +65,31 @@
 </body>
 
 </html>
+{{ end }}
 
+{{ define "dashboard-page" }}
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>uphit.me - Task Scheduling Made Easy</title>
+</head>
+
+<body>
+	<div>
+		{{ range .tasks }}
+			<div>
+				<p>{{ .Status }}: {{ .Title }}</p>
+				<p>{{ .Target.String }}</p>
+				<code>
+					<pre>{{ jsonMarshalIndent .Payload }}</pre>
+				</code>
+			</div>
+		{{ end }}
+	</div>
+</body>
+
+</html>
 {{ end }}

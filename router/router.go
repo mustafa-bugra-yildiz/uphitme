@@ -7,12 +7,19 @@ import (
 
 	"github.com/mustafa-bugra-yildiz/uphitme/middleware"
 	"github.com/mustafa-bugra-yildiz/uphitme/page"
+	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
 )
 
-func New() http.Handler {
+type state struct {
+	taskRepo task.Repo
+}
+
+func New(taskRepo task.Repo) http.Handler {
+	s := state{taskRepo: taskRepo}
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", landingPageHandler)
+	mux.HandleFunc("/dashboard", s.dashboardPageHandler)
 	mux.HandleFunc("/health", healthHandler)
 	mux.HandleFunc("/api/schedule", scheduleHandler)
 
@@ -27,6 +34,19 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 
 func landingPageHandler(w http.ResponseWriter, r *http.Request) {
 	err := page.Landing(w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func (s state) dashboardPageHandler(w http.ResponseWriter, r *http.Request) {
+	tasks, err := s.taskRepo.List(r.Context(), 1, 10)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = page.Dashboard(w, tasks)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
