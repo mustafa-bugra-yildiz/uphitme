@@ -1,15 +1,16 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
+	"context"
 
 	"github.com/mustafa-bugra-yildiz/uphitme/env"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
 	"github.com/mustafa-bugra-yildiz/uphitme/router"
+	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
 
-	_ "github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 func main() {
@@ -18,23 +19,28 @@ func main() {
 
 	taskRepo := task.NewRepo(db)
 
+	scheduler, err := scheduler.New(context.Background(), taskRepo)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	log.Printf("Starting server on port %s", env.Port)
 	log.Fatal(http.ListenAndServe(
 		":"+env.Port,
-		router.New(taskRepo),
+		router.New(taskRepo, scheduler),
 	))
 }
 
-func connectDB() *sql.DB {
+func connectDB() *pgxpool.Pool {
 	log.Println("Connecting the database")
-	db, err := sql.Open("postgres", env.DatabaseURL)
+	db, err := pgxpool.New(context.Background(), env.DatabaseURL)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Println("Connected the database")
 
 	var version string
-	err = db.QueryRow("SELECT version()").Scan(&version)
+	err = db.QueryRow(context.Background(), "SELECT version()").Scan(&version)
 	if err != nil {
 		log.Fatal(err)
 	}

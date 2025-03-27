@@ -1,7 +1,7 @@
 package page
 
 import (
-	_ "embed"
+	"embed"
 	"encoding/json"
 	"html/template"
 	"io"
@@ -10,8 +10,8 @@ import (
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
 )
 
-//go:embed templates.html
-var templates string
+//go:embed *
+var templates embed.FS
 
 var tmpl = template.Must(template.New("").
 	Funcs(template.FuncMap{
@@ -24,15 +24,33 @@ var tmpl = template.Must(template.New("").
 		},
 		"httpStatusText": http.StatusText,
 	}).
-	Parse(templates),
+	ParseFS(templates, "*.html"),
 )
 
 func Landing(w io.Writer) error {
 	return tmpl.ExecuteTemplate(w, "landing-page", nil)
 }
 
-func Dashboard(w io.Writer, tasks []task.Task) error {
+func Dashboard(w io.Writer, page, pageSize, count int, tasks []task.Task) error {
+	pageCount := count / pageSize
+
+	var prev *int
+	if page > 1 {
+		value := page - 1
+		prev = &value
+	}
+
+	var next *int
+	if page < pageCount {
+		value := page + 1
+		next = &value
+	}
+
 	return tmpl.ExecuteTemplate(w, "dashboard-page", map[string]any{
 		"tasks": tasks,
+
+		"prev": prev,
+		"page": page,
+		"next": next,
 	})
 }

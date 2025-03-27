@@ -1,7 +1,6 @@
 package router
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"net/http"
@@ -11,14 +10,18 @@ import (
 	"github.com/mustafa-bugra-yildiz/uphitme/middleware"
 	"github.com/mustafa-bugra-yildiz/uphitme/page"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
+	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
+
+	"golang.org/x/sync/errgroup"
 )
 
 type state struct {
 	taskRepo task.Repo
+	scheduler *scheduler.Scheduler
 }
 
-func New(taskRepo task.Repo) http.Handler {
-	s := state{taskRepo: taskRepo}
+func New(taskRepo task.Repo, scheduler *scheduler.Scheduler) http.Handler {
+	s := state{taskRepo: taskRepo, scheduler: scheduler}
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", landingPageHandler)
@@ -43,13 +46,29 @@ func landingPageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s state) dashboardPageHandler(w http.ResponseWriter, r *http.Request) {
-	tasks, err := s.taskRepo.List(r.Context(), 1, 10)
+	g := new(errgroup.Group)
+
+	var tasks []task.Task
+	g.Go(func() error {
+		var err error
+		tasks, err = s.taskRepo.List(r.Context(), 1, 10)
+		return err
+	})
+
+	var count int
+	g.Go(func() error {
+		var err error
+		count, err = s.taskRepo.Count(r.Context())
+		return err
+	})
+
+	err := g.Wait()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	err = page.Dashboard(w, tasks)
+	err = page.Dashboard(w, 1, 10, count, tasks)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -84,24 +103,7 @@ func (s state) scheduleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	go func() error {
-		ctx := context.Background()
-
-		payload, _ := json.Marshal(req.Payload)
-		res, err := http.Post(req.Target, "application/json", bytes.NewBuffer(payload))
-		if err != nil {
-			return s.taskRepo.Fail(ctx, taskID, err)
-		}
-		defer res.Body.Close()
-
-		var body task.Payload
-		err = json.NewDecoder(res.Body).Decode(&body)
-		if err != nil {
-			return s.taskRepo.Fail(ctx, taskID, err)
-		}
-
-		return s.taskRepo.Succeed(ctx, taskID, res.StatusCode, body)
-	}()
+	go s.scheduler.Schedule(context.Background(), taskID)
 
 	msg := "task scheduled, we will call you back"
 	json.NewEncoder(w).Encode(Response[string]{

@@ -9,14 +9,18 @@ import (
 )
 
 type Repo interface {
+	Count(ctx context.Context) (int, error)
 	List(ctx context.Context, page, pageSize int) ([]Task, error)
+	ListPending(ctx context.Context) ([]uuid.UUID, error)
+
+	Get(ctx context.Context, taskID uuid.UUID) (*Task, error)
+
 	Create(
 		ctx context.Context,
 		title string,
 		target url.URL,
 		payload Payload,
 	) (uuid.UUID, error)
-
 	Fail(ctx context.Context, taskID uuid.UUID, err error) error
 	Succeed(ctx context.Context, taskID uuid.UUID, code int, body Payload) error
 }

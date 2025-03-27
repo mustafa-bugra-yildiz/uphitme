@@ -1,0 +1,168 @@
+{{ define "dashboard-page" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>uphit.me - Task Scheduling Made Easy</title>
+	<style>
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background-color: #f4f4f4;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			color: #333;
+		}
+
+		.container {
+			width: 100%;
+			max-width: 900px;
+			padding: 20px;
+			box-sizing: border-box;
+			background-color: #fff;
+			border-radius: 8px;
+			box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+			overflow: hidden;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.task {
+			padding: 16px;
+			border-bottom: 1px solid #eee;
+			display: grid;
+			grid-template-columns: auto 1fr;
+			gap: 16px;
+			align-items: center;
+		}
+
+		.task p {
+			margin: 0;
+			font-size: 14px;
+			line-height: 1.5;
+		}
+
+		.task code {
+			display: block;
+			background-color: #f7f7f7;
+			border-radius: 4px;
+			padding: 10px;
+			font-size: 12px;
+			overflow-x: auto;
+			margin-top: 10px;
+		}
+
+		.task .status {
+			font-size: 20px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			background-color: #f4f4f4;
+		}
+
+		.task .status.pending {
+			background-color: #f39c12;
+		}
+
+		.task .status.failed {
+			background-color: #e74c3c;
+		}
+
+		.task .status.succeeded {
+			background-color: #2ecc71;
+		}
+
+		.task .status i {
+			color: white;
+			font-size: 16px;
+		}
+
+		.task .title {
+			font-size: 18px;
+			font-weight: bold;
+			color: #333;
+		}
+
+		.pagination {
+			display: flex;
+			justify-content: center;
+			gap: 15px;
+			margin-top: 20px;
+			font-size: 14px;
+		}
+
+		.pagination a {
+			text-decoration: none;
+			color: #007bff;
+			padding: 6px 12px;
+			border: 1px solid #007bff;
+			border-radius: 4px;
+			transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+		}
+
+		.pagination a:hover {
+			background-color: #007bff;
+			color: white;
+		}
+
+		.pagination p {
+			margin: 0;
+			line-height: 30px;
+			color: #333;
+		}
+	</style>
+	<!-- Add FontAwesome for icons -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+
+<body>
+	<div class="container">
+		{{ range .tasks }}
+		<div class="task">
+			<!-- Status icon -->
+			<div class="status {{ .Status }}">
+				{{ if eq .Status "pending" }}
+					<i class="fas fa-clock"></i>
+				{{ else if eq .Status "failed" }}
+					<i class="fas fa-times"></i>
+				{{ else if eq .Status "succeeded" }}
+					<i class="fas fa-check"></i>
+				{{ end }}
+			</div>
+			<div>
+				<p class="title">{{ .Title }}</p>
+				<p>{{ .Status }}</p>
+				<p><strong>Target:</strong> {{ .Target.String }}</p>
+				<code>{{ jsonMarshalIndent .Payload }}</code>
+				{{ if eq .Status "failed" }}
+				<p class="error"><strong>Error:</strong> {{ .Error }}</p>
+				{{ end }}
+				{{ if eq .Status "succeeded" }}
+				<p class="result"><strong>Result:</strong> {{ httpStatusText .Code }}</p>
+				<code>{{ jsonMarshalIndent .Body }}</code>
+				{{ end }}
+			</div>
+		</div>
+		{{ end }}
+		<div class="pagination">
+			{{ if .prev }}
+			<a href="/dashboard?page={{ .prev }}">Prev</a>
+			{{ end }}
+			<p>Page {{ .page }}</p>
+			{{ if .next }}
+			<a href="/dashboard?page={{ .next }}">Next</a>
+			{{ end }}
+		</div>
+	</div>
+</body>
+
+</html>
+{{ end }}
