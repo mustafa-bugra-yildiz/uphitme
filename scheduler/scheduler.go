@@ -1,11 +1,11 @@
 package scheduler
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
-	"net/http"
-	"bytes"
 	"fmt"
+	"net/http"
 
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
 

@@ -10,21 +10,34 @@ import (
 	"github.com/mustafa-bugra-yildiz/uphitme/middleware"
 	"github.com/mustafa-bugra-yildiz/uphitme/page"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
+	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
 
 	"golang.org/x/sync/errgroup"
 )
 
 type state struct {
-	taskRepo task.Repo
+	taskRepo  task.Repo
+	userRepo  user.Repo
 	scheduler *scheduler.Scheduler
 }
 
-func New(taskRepo task.Repo, scheduler *scheduler.Scheduler) http.Handler {
-	s := state{taskRepo: taskRepo, scheduler: scheduler}
+func New(
+	taskRepo task.Repo,
+	userRepo user.Repo,
+	scheduler *scheduler.Scheduler,
+) http.Handler {
+	s := state{
+		taskRepo: taskRepo,
+		userRepo: userRepo,
+		scheduler: scheduler,
+	}
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", landingPageHandler)
+	mux.HandleFunc("/sign-in", signInHandler)
+	mux.HandleFunc("/sign-up", signUpHandler)
 	mux.HandleFunc("/dashboard", s.dashboardPageHandler)
 	mux.HandleFunc("/health", healthHandler)
 	mux.HandleFunc("/api/schedule", s.scheduleHandler)
@@ -111,6 +124,20 @@ func (s state) scheduleHandler(w http.ResponseWriter, r *http.Request) {
 		Data:      &msg,
 		Error:     nil,
 	})
+}
+
+func signInHandler(w http.ResponseWriter, r *http.Request) {
+	err := page.SignIn(w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func signUpHandler(w http.ResponseWriter, r *http.Request) {
+	err := page.SignUp(w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // TODO: Move this to somewhere else maybe?

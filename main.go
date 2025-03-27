@@ -1,12 +1,13 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
-	"context"
 
 	"github.com/mustafa-bugra-yildiz/uphitme/env"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
+	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 	"github.com/mustafa-bugra-yildiz/uphitme/router"
 	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
 
@@ -18,6 +19,7 @@ func main() {
 	defer db.Close()
 
 	taskRepo := task.NewRepo(db)
+	userRepo := user.NewRepo(db)
 
 	scheduler, err := scheduler.New(context.Background(), taskRepo)
 	if err != nil {
@@ -27,7 +29,7 @@ func main() {
 	log.Printf("Starting server on port %s", env.Port)
 	log.Fatal(http.ListenAndServe(
 		":"+env.Port,
-		router.New(taskRepo, scheduler),
+		router.New(taskRepo, userRepo, scheduler),
 	))
 }
 

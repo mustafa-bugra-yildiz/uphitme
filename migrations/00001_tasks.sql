@@ -56,10 +56,7 @@ EXECUTE PROCEDURE update_modified_column();
 -- +goose Down
 -- +goose StatementBegin
 DROP TRIGGER update_tasks_modified_time ON tasks;
-
 DROP TABLE tasks;
-
 DROP TYPE task_status;
-
 DROP FUNCTION update_modified_column;
 -- +goose StatementEnd

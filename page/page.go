@@ -54,3 +54,11 @@ func Dashboard(w io.Writer, page, pageSize, count int, tasks []task.Task) error 
 		"next": next,
 	})
 }
+
+func SignUp(w io.Writer) error {
+	return tmpl.ExecuteTemplate(w, "sign-up-page", nil)
+}
+
+func SignIn(w io.Writer) error {
+	return tmpl.ExecuteTemplate(w, "sign-in-page", nil)
+}

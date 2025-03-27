@@ -1,0 +1,268 @@
+{{ define "sign-up-page" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>uphit.me - Sign Up</title>
+	<style>
+		/* Basic Reset */
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		/* Body */
+		body {
+			font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+			background-color: #fff;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			min-height: 100vh;
+			color: #333;
+			padding: 20px;
+			line-height: 1.5;
+		}
+
+		/* Container */
+		.container {
+			width: 100%;
+			max-width: 400px;
+			padding: 40px;
+			background-color: #fff;
+		}
+
+		/* Header */
+		.header {
+			margin-bottom: 30px;
+			text-align: center;
+		}
+
+		.header h1 {
+			font-size: 24px;
+			color: #111;
+			margin-bottom: 8px;
+			font-weight: 600;
+		}
+
+		.header p {
+			color: #666;
+			font-size: 14px;
+		}
+
+		/* Form */
+		.form-group {
+			margin-bottom: 20px;
+		}
+
+		.form-group label {
+			display: block;
+			margin-bottom: 6px;
+			font-size: 14px;
+			color: #333;
+			font-weight: 500;
+		}
+
+		.form-group input {
+			width: 100%;
+			padding: 10px 12px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			font-size: 14px;
+			color: #333;
+			font-family: inherit;
+			transition: border-color 0.2s;
+		}
+
+		.form-group input:focus {
+			outline: none;
+			border-color: #3182ce;
+		}
+
+		/* Button */
+		.btn {
+			display: block;
+			width: 100%;
+			padding: 12px;
+			background-color: #3182ce;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			font-size: 14px;
+			font-weight: 500;
+			cursor: pointer;
+			transition: background-color 0.2s;
+			font-family: inherit;
+		}
+
+		.btn:hover {
+			background-color: #2c5282;
+		}
+
+		/* Links */
+		.links {
+			margin-top: 20px;
+			text-align: center;
+			font-size: 14px;
+			color: #666;
+		}
+
+		.links a {
+			color: #3182ce;
+			text-decoration: none;
+		}
+
+		.links a:hover {
+			text-decoration: underline;
+		}
+
+		/* Password Requirements */
+		.password-requirements {
+			margin-top: 6px;
+			font-size: 12px;
+			color: #666;
+		}
+
+		.password-requirements ul {
+			margin-top: 4px;
+			padding-left: 20px;
+		}
+
+		.password-requirements li {
+			margin-bottom: 2px;
+		}
+
+		/* Error message */
+		.error-message {
+			color: #e12d39;
+			font-size: 13px;
+			margin-top: 4px;
+			display: none;
+		}
+
+		/* Mobile responsiveness */
+		@media (max-width: 480px) {
+			.container {
+				padding: 30px 20px;
+			}
+
+			.header h1 {
+				font-size: 22px;
+			}
+
+			.form-group label {
+				font-size: 13px;
+			}
+
+			.form-group input {
+				padding: 8px 10px;
+			}
+
+			.btn {
+				padding: 10px;
+			}
+		}
+	</style>
+	<!-- Inter font -->
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+</head>
+
+<body>
+	<div class="container">
+		<div class="header">
+			<h1>Create your account</h1>
+			<p>Sign up to start scheduling tasks with uphit.me</p>
+		</div>
+
+		<form action="/signup" method="POST">
+			<div class="form-group">
+				<label for="email">Email</label>
+				<input type="email" id="email" name="email" required autocomplete="email">
+				<div class="error-message" id="email-error">Please enter a valid email address</div>
+			</div>
+
+			<div class="form-group">
+				<label for="username">Username</label>
+				<input type="text" id="username" name="username" required autocomplete="username">
+				<div class="error-message" id="username-error">Username must be between 3-20 characters</div>
+			</div>
+
+			<div class="form-group">
+				<label for="password">Password</label>
+				<input type="password" id="password" name="password" required autocomplete="new-password">
+				<div class="password-requirements">
+					Password must contain:
+					<ul>
+						<li>At least 8 characters</li>
+						<li>At least one uppercase letter</li>
+						<li>At least one number</li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label for="confirm-password">Confirm Password</label>
+				<input type="password" id="confirm-password" name="confirm-password" required autocomplete="new-password">
+				<div class="error-message" id="password-match-error">Passwords do not match</div>
+			</div>
+
+			<button type="submit" class="btn">Create Account</button>
+
+			<div class="links">
+				Already have an account? <a href="/signin">Sign in</a>
+			</div>
+		</form>
+	</div>
+
+	<script>
+		// Simple form validation
+		const form = document.querySelector('form');
+		const emailInput = document.getElementById('email');
+		const usernameInput = document.getElementById('username');
+		const passwordInput = document.getElementById('password');
+		const confirmPasswordInput = document.getElementById('confirm-password');
+		
+		const emailError = document.getElementById('email-error');
+		const usernameError = document.getElementById('username-error');
+		const passwordMatchError = document.getElementById('password-match-error');
+
+		form.addEventListener('submit', function(e) {
+			let isValid = true;
+			
+			// Email validation
+			const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+			if (!emailPattern.test(emailInput.value)) {
+				emailError.style.display = 'block';
+				isValid = false;
+			} else {
+				emailError.style.display = 'none';
+			}
+			
+			// Username validation
+			if (usernameInput.value.length < 3 || usernameInput.value.length > 20) {
+				usernameError.style.display = 'block';
+				isValid = false;
+			} else {
+				usernameError.style.display = 'none';
+			}
+			
+			// Password match validation
+			if (passwordInput.value !== confirmPasswordInput.value) {
+				passwordMatchError.style.display = 'block';
+				isValid = false;
+			} else {
+				passwordMatchError.style.display = 'none';
+			}
+			
+			if (!isValid) {
+				e.preventDefault();
+			}
+		});
+	</script>
+</body>
+
+</html> 
+{{ end }}
