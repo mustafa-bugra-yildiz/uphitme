@@ -6,6 +6,9 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"net/mail"
+	"errors"
+	"regexp"
 
 	"github.com/mustafa-bugra-yildiz/uphitme/middleware"
 	"github.com/mustafa-bugra-yildiz/uphitme/page"
@@ -14,6 +17,7 @@ import (
 	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
 
 	"golang.org/x/sync/errgroup"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type state struct {
@@ -37,7 +41,7 @@ func New(
 
 	mux.HandleFunc("/", landingPageHandler)
 	mux.HandleFunc("/sign-in", signInHandler)
-	mux.HandleFunc("/sign-up", signUpHandler)
+	mux.HandleFunc("/sign-up", s.signUpHandler)
 	mux.HandleFunc("/dashboard", s.dashboardPageHandler)
 	mux.HandleFunc("/health", healthHandler)
 	mux.HandleFunc("/api/schedule", s.scheduleHandler)
@@ -133,11 +137,49 @@ func signInHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func signUpHandler(w http.ResponseWriter, r *http.Request) {
-	err := page.SignUp(w)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+func (s state) signUpHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		err := page.SignUp(w, nil)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
 	}
+
+	fullName := strings.TrimSpace(r.FormValue("full-name"))
+	if fullName == "" {
+		err := errors.New("your full name cannot be empty")
+		page.SignUp(w, err)
+		return
+	}
+
+	email := strings.TrimSpace(r.FormValue("email"))
+	_, err := mail.ParseAddress(email)
+	if err != nil {
+		page.SignUp(w, err)
+		return
+	}
+
+	password := strings.TrimSpace(r.FormValue("password"))
+	err = validatePassword(password)
+	if err != nil {
+		page.SignUp(w, err)
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		page.SignUp(w, err)
+		return
+	}
+
+	err = s.userRepo.Create(r.Context(), fullName, email, string(hashedPassword))
+	if err != nil {
+		page.SignUp(w, err)
+		return
+	}
+
+	http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
 }
 
 // TODO: Move this to somewhere else maybe?
@@ -145,4 +187,26 @@ type Response[T any] struct {
 	Succeeded bool    `json:"succeeded"`
 	Data      *T      `json:"data"`
 	Error     *string `json:"error"`
+}
+
+// TODO: Move this to somewhere else maybe?
+func validatePassword(password string) error {
+	// Rule 1: Password must be at least 8 characters long
+	if len(password) < 8 {
+		return errors.New("password must be at least 8 characters long")
+	}
+
+	// Rule 2: Password must contain at least one uppercase letter
+	upperCaseRegex := regexp.MustCompile(`[A-Z]`)
+	if !upperCaseRegex.MatchString(password) {
+		return errors.New("password must contain at least one uppercase letter")
+	}
+
+	// Rule 3: Password must contain at least one number
+	numberRegex := regexp.MustCompile(`[0-9]`)
+	if !numberRegex.MatchString(password) {
+		return errors.New("password must contain at least one number")
+	}
+
+	return nil // No errors, password is valid
 }
