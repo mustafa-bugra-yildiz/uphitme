@@ -11,11 +11,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/uuid"
+	"github.com/mustafa-bugra-yildiz/uphitme/auth"
 	"github.com/mustafa-bugra-yildiz/uphitme/mocks/userapp"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
+
+	"github.com/google/uuid"
 	"go.uber.org/mock/gomock"
 )
 
@@ -23,6 +25,7 @@ func TestHealthWorks(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	taskRepo := task.NewMockRepo(ctrl)
 	userRepo := user.NewMockRepo(ctrl)
+	auth := auth.New(userRepo)
 
 	taskRepo.EXPECT().ListPending(gomock.Any()).Times(1)
 	scheduler, _ := scheduler.New(context.Background(), taskRepo)
@@ -30,7 +33,7 @@ func TestHealthWorks(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/health", nil)
 
 	res := httptest.NewRecorder()
-	New(taskRepo, userRepo, scheduler).ServeHTTP(res, req)
+	New(auth, taskRepo, userRepo, scheduler).ServeHTTP(res, req)
 
 	got, _ := io.ReadAll(res.Body)
 	got = bytes.TrimSpace(got)
@@ -45,6 +48,7 @@ func TestImmediateSchedulingWorks(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	taskRepo := task.NewMockRepo(ctrl)
 	userRepo := user.NewMockRepo(ctrl)
+	auth := auth.New(userRepo)
 
 	taskRepo.EXPECT().ListPending(gomock.Any()).Times(1)
 	scheduler_, _ := scheduler.New(context.Background(), taskRepo)
@@ -99,7 +103,7 @@ func TestImmediateSchedulingWorks(t *testing.T) {
 		Times(1)
 
 	res := httptest.NewRecorder()
-	New(taskRepo, userRepo, scheduler_).ServeHTTP(res, req)
+	New(auth, taskRepo, userRepo, scheduler_).ServeHTTP(res, req)
 
 	{
 		got := res.Code

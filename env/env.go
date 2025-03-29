@@ -1,13 +1,13 @@
 package env
 
 import (
+	"log"
 	"os"
 	"strings"
-	"log"
 )
 
-var Env = getenvName("ENV", Dev) // TODO: set this up in production
-var JWTsecret = getenvBytes("JWT_SECRET", "super-duper-secret-key") // TODO: set this up in production
+var Env = getenvName("ENV", Dev)
+var JWTsecret = getenvBytes("JWT_SECRET", "super-duper-secret-key")
 var Port = getenv("PORT", "3000")
 var DatabaseURL = getenv("DATABASE_URL", "postgres://localhost:5432")
 
@@ -47,6 +47,6 @@ func getenvBytes(key string, default_ string) []byte {
 type EnvName string
 
 const (
-	Dev EnvName = "dev"
+	Dev  EnvName = "dev"
 	Prod EnvName = "prod"
 )

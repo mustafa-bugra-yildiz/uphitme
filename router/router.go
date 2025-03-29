@@ -10,20 +10,20 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/mustafa-bugra-yildiz/uphitme/auth"
+	"github.com/mustafa-bugra-yildiz/uphitme/env"
 	"github.com/mustafa-bugra-yildiz/uphitme/middleware"
 	"github.com/mustafa-bugra-yildiz/uphitme/page"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
-	"github.com/mustafa-bugra-yildiz/uphitme/auth"
-	"github.com/mustafa-bugra-yildiz/uphitme/env"
 
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/sync/errgroup"
 )
 
 type state struct {
-	auth *auth.Auth
+	auth      *auth.Auth
 	taskRepo  task.Repo
 	userRepo  user.Repo
 	scheduler *scheduler.Scheduler
@@ -36,7 +36,7 @@ func New(
 	scheduler *scheduler.Scheduler,
 ) http.Handler {
 	s := state{
-		auth: auth,
+		auth:      auth,
 		taskRepo:  taskRepo,
 		userRepo:  userRepo,
 		scheduler: scheduler,

@@ -81,8 +81,8 @@ func SignIn(w io.Writer, email string, err error) error {
 	}
 
 	return tmpl.ExecuteTemplate(w, "sign-in-page", map[string]any{
-		"email":    email,
-		"error":    errMsg,
+		"email": email,
+		"error": errMsg,
 	})
 }
 

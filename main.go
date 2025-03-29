@@ -5,12 +5,12 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/mustafa-bugra-yildiz/uphitme/auth"
 	"github.com/mustafa-bugra-yildiz/uphitme/env"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 	"github.com/mustafa-bugra-yildiz/uphitme/router"
 	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
-	"github.com/mustafa-bugra-yildiz/uphitme/auth"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )

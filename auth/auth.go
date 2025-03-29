@@ -1,24 +1,24 @@
 package auth
 
 import (
+	"errors"
 	"net/http"
 	"time"
-	"errors"
 
-	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 	"github.com/mustafa-bugra-yildiz/uphitme/env"
+	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 
-	"github.com/google/uuid"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 const cookieName = "session"
 
-type Auth struct { userRepo user.Repo }
-type Claims struct { jwt.RegisteredClaims }
+type Auth struct{ userRepo user.Repo }
+type Claims struct{ jwt.RegisteredClaims }
 
 func New(userRepo user.Repo) *Auth {
-	return &Auth{ userRepo: userRepo }
+	return &Auth{userRepo: userRepo}
 }
 
 func (a *Auth) Verify(r *http.Request) (*Claims, error) {
@@ -69,12 +69,12 @@ func (a *Auth) Login(w http.ResponseWriter, u user.User) error {
 	}
 
 	http.SetCookie(w, &http.Cookie{
-		Name: cookieName,
-		Value: tokenString,
-		Path: "/",
+		Name:     cookieName,
+		Value:    tokenString,
+		Path:     "/",
 		HttpOnly: true,
-		Secure: env.Env == env.Prod,
-		Expires: expiresAt.Time,
+		Secure:   env.Env == env.Prod,
+		Expires:  expiresAt.Time,
 	})
 
 	return nil
@@ -82,11 +82,11 @@ func (a *Auth) Login(w http.ResponseWriter, u user.User) error {
 
 func (a *Auth) Logout(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
-		Name: cookieName,
-		Value: "",
-		Path: "/",
+		Name:     cookieName,
+		Value:    "",
+		Path:     "/",
 		HttpOnly: true,
-		Secure: env.Env == env.Prod,
-		Expires: time.Unix(0, 0),
+		Secure:   env.Env == env.Prod,
+		Expires:  time.Unix(0, 0),
 	})
 }
