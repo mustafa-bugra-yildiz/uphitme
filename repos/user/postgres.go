@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -31,6 +32,9 @@ func (p postgres) Get(ctx context.Context, email string) (*User, error) {
 		&user.ID, &user.CreatedAt, &user.UpdatedAt,
 		&user.FullName, &user.Email, &user.EmailConfirmedAt, &user.HashedPassword,
 	)
+	if err == pgx.ErrNoRows {
+		return nil, ErrUserNotFound
+	}
 	if err != nil {
 		return nil, fmt.Errorf("user.Repo.Get: %w", err)
 	}

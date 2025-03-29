@@ -55,7 +55,7 @@ func Dashboard(w io.Writer, page, pageSize, count int, tasks []task.Task) error 
 	})
 }
 
-func SignUp(w io.Writer, err error) error {
+func SignUp(w io.Writer, fullName, email string, err error) error {
 	var errMsg *string
 	if err != nil {
 		value := err.Error()
@@ -63,8 +63,14 @@ func SignUp(w io.Writer, err error) error {
 	}
 
 	return tmpl.ExecuteTemplate(w, "sign-up-page", map[string]any{
-		"error": errMsg,
+		"fullName": fullName,
+		"email":    email,
+		"error":    errMsg,
 	})
+}
+
+func SignUpSuccess(w io.Writer) error {
+	return tmpl.ExecuteTemplate(w, "sign-up-success-page", nil)
 }
 
 func SignIn(w io.Writer) error {

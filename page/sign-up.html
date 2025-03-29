@@ -218,13 +218,13 @@
 		<form action="/sign-up" method="POST">
 			<div class="form-group">
 				<label for="full-name">Full Name</label>
-				<input type="text" id="full-name" name="full-name" required autocomplete="name">
+				<input type="text" id="full-name" name="full-name" value="{{ .fullName }}" required autocomplete="name">
 				<div class="error-message" id="name-error">Please enter your full name</div>
 			</div>
 
 			<div class="form-group">
 				<label for="email">Email</label>
-				<input type="email" id="email" name="email" required autocomplete="email">
+				<input type="email" id="email" name="email" value="{{ .email }}" required autocomplete="email">
 				<div class="error-message" id="email-error">Please enter a valid email address</div>
 			</div>
 

@@ -3,12 +3,12 @@ package router
 import (
 	"context"
 	"encoding/json"
-	"net/http"
-	"net/url"
-	"strings"
-	"net/mail"
 	"errors"
+	"net/http"
+	"net/mail"
+	"net/url"
 	"regexp"
+	"strings"
 
 	"github.com/mustafa-bugra-yildiz/uphitme/middleware"
 	"github.com/mustafa-bugra-yildiz/uphitme/page"
@@ -16,8 +16,8 @@ import (
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
 
-	"golang.org/x/sync/errgroup"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/sync/errgroup"
 )
 
 type state struct {
@@ -40,8 +40,11 @@ func New(
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", landingPageHandler)
+
 	mux.HandleFunc("/sign-in", signInHandler)
 	mux.HandleFunc("/sign-up", s.signUpHandler)
+	mux.HandleFunc("/sign-up/success", signUpSuccessHandler)
+
 	mux.HandleFunc("/dashboard", s.dashboardPageHandler)
 	mux.HandleFunc("/health", healthHandler)
 	mux.HandleFunc("/api/schedule", s.scheduleHandler)
@@ -139,7 +142,7 @@ func signInHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s state) signUpHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		err := page.SignUp(w, nil)
+		err := page.SignUp(w, "", "", nil)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -147,39 +150,54 @@ func (s state) signUpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fullName := strings.TrimSpace(r.FormValue("full-name"))
+	email := strings.TrimSpace(r.FormValue("email"))
+
 	if fullName == "" {
 		err := errors.New("your full name cannot be empty")
-		page.SignUp(w, err)
+		page.SignUp(w, fullName, email, err)
 		return
 	}
 
-	email := strings.TrimSpace(r.FormValue("email"))
 	_, err := mail.ParseAddress(email)
 	if err != nil {
-		page.SignUp(w, err)
+		page.SignUp(w, fullName, email, err)
 		return
 	}
 
 	password := strings.TrimSpace(r.FormValue("password"))
 	err = validatePassword(password)
 	if err != nil {
-		page.SignUp(w, err)
+		page.SignUp(w, fullName, email, err)
+		return
+	}
+
+	_, err = s.userRepo.Get(r.Context(), email)
+	if err != user.ErrUserNotFound {
+		err = errors.New("there is already an account with that email")
+		page.SignUp(w, fullName, email, err)
 		return
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		page.SignUp(w, err)
+		page.SignUp(w, fullName, email, err)
 		return
 	}
 
 	err = s.userRepo.Create(r.Context(), fullName, email, string(hashedPassword))
 	if err != nil {
-		page.SignUp(w, err)
+		page.SignUp(w, fullName, email, err)
 		return
 	}
 
-	http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
+	http.Redirect(w, r, "/sign-up/success", http.StatusSeeOther)
+}
+
+func signUpSuccessHandler(w http.ResponseWriter, r *http.Request) {
+	err := page.SignUpSuccess(w)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // TODO: Move this to somewhere else maybe?
