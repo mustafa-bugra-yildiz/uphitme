@@ -10,6 +10,7 @@ import (
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 	"github.com/mustafa-bugra-yildiz/uphitme/router"
 	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
+	"github.com/mustafa-bugra-yildiz/uphitme/auth"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -21,6 +22,8 @@ func main() {
 	taskRepo := task.NewRepo(db)
 	userRepo := user.NewRepo(db)
 
+	auth := auth.New(userRepo)
+
 	scheduler, err := scheduler.New(context.Background(), taskRepo)
 	if err != nil {
 		log.Fatal(err)
@@ -29,7 +32,7 @@ func main() {
 	log.Printf("Starting server on port %s", env.Port)
 	log.Fatal(http.ListenAndServe(
 		":"+env.Port,
-		router.New(taskRepo, userRepo, scheduler),
+		router.New(auth, taskRepo, userRepo, scheduler),
 	))
 }
 

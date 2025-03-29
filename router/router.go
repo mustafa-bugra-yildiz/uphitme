@@ -15,23 +15,28 @@ import (
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
+	"github.com/mustafa-bugra-yildiz/uphitme/auth"
+	"github.com/mustafa-bugra-yildiz/uphitme/env"
 
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/sync/errgroup"
 )
 
 type state struct {
+	auth *auth.Auth
 	taskRepo  task.Repo
 	userRepo  user.Repo
 	scheduler *scheduler.Scheduler
 }
 
 func New(
+	auth *auth.Auth,
 	taskRepo task.Repo,
 	userRepo user.Repo,
 	scheduler *scheduler.Scheduler,
 ) http.Handler {
 	s := state{
+		auth: auth,
 		taskRepo:  taskRepo,
 		userRepo:  userRepo,
 		scheduler: scheduler,
@@ -41,9 +46,10 @@ func New(
 
 	mux.HandleFunc("/", landingPageHandler)
 
-	mux.HandleFunc("/sign-in", signInHandler)
+	mux.HandleFunc("/sign-in", s.signInHandler)
 	mux.HandleFunc("/sign-up", s.signUpHandler)
 	mux.HandleFunc("/sign-up/success", signUpSuccessHandler)
+	mux.HandleFunc("/sign-out", s.signOutHandler)
 
 	mux.HandleFunc("/dashboard", s.dashboardPageHandler)
 	mux.HandleFunc("/health", healthHandler)
@@ -66,6 +72,12 @@ func landingPageHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s state) dashboardPageHandler(w http.ResponseWriter, r *http.Request) {
+	_, err := s.auth.Verify(r)
+	if err != nil {
+		http.Redirect(w, r, "/sign-in", http.StatusUnauthorized)
+		return
+	}
+
 	g := new(errgroup.Group)
 
 	var tasks []task.Task
@@ -82,7 +94,7 @@ func (s state) dashboardPageHandler(w http.ResponseWriter, r *http.Request) {
 		return err
 	})
 
-	err := g.Wait()
+	err = g.Wait()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -133,14 +145,66 @@ func (s state) scheduleHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func signInHandler(w http.ResponseWriter, r *http.Request) {
-	err := page.SignIn(w)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+func (s state) signInHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		err := page.SignIn(w, "", nil)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
 	}
+
+	email := strings.TrimSpace(r.FormValue("email"))
+	password := strings.TrimSpace(r.FormValue("password"))
+
+	_, err := mail.ParseAddress(email)
+	if err != nil {
+		page.SignIn(w, email, err)
+		return
+	}
+
+	if password == "" {
+		err = errors.New("password cannot be empty")
+		page.SignIn(w, email, err)
+		return
+	}
+
+	user_, err := s.userRepo.Get(r.Context(), email)
+	if err == user.ErrUserNotFound {
+		err = errors.New("invalid credentials")
+		page.SignIn(w, email, err)
+		return
+	}
+	if err != nil {
+		page.SignIn(w, email, err)
+		return
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user_.HashedPassword), []byte(password))
+	if err != nil {
+		err = errors.New("invalid credentials")
+		page.SignIn(w, email, err)
+		return
+	}
+
+	err = s.auth.Login(w, *user_)
+	if err != nil {
+		page.SignIn(w, email, err)
+		return
+	}
+
+	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
 }
 
 func (s state) signUpHandler(w http.ResponseWriter, r *http.Request) {
+	if env.Env == env.Prod {
+		err := page.SignUpWIP(w)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
 	if r.Method != http.MethodPost {
 		err := page.SignUp(w, "", "", nil)
 		if err != nil {
@@ -198,6 +262,11 @@ func signUpSuccessHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func (s state) signOutHandler(w http.ResponseWriter, r *http.Request) {
+	s.auth.Logout(w)
+	http.Redirect(w, r, "/sign-in", http.StatusSeeOther)
 }
 
 // TODO: Move this to somewhere else maybe?

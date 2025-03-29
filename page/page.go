@@ -73,6 +73,19 @@ func SignUpSuccess(w io.Writer) error {
 	return tmpl.ExecuteTemplate(w, "sign-up-success-page", nil)
 }
 
-func SignIn(w io.Writer) error {
-	return tmpl.ExecuteTemplate(w, "sign-in-page", nil)
+func SignIn(w io.Writer, email string, err error) error {
+	var errMsg *string
+	if err != nil {
+		value := err.Error()
+		errMsg = &value
+	}
+
+	return tmpl.ExecuteTemplate(w, "sign-in-page", map[string]any{
+		"email":    email,
+		"error":    errMsg,
+	})
+}
+
+func SignUpWIP(w io.Writer) error {
+	return tmpl.ExecuteTemplate(w, "sign-up-wip-page", nil)
 }
