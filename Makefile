@@ -12,6 +12,10 @@ coverage: bin/main
 	go tool cover -html=coverage.out
 	rm coverage.out
 
+.PHONY: mocks
+mocks:
+	go generate ./...
+
 .PHONY: tools
 tools:
 	# DB migrations
@@ -26,7 +30,6 @@ tools:
 # targets
 
 bin/main: bin/tailwind.css
-	go generate ./...
 	go build -v -o bin/main .
 
 bin/tailwind.css: input.css
