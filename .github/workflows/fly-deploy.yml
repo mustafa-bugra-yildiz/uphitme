@@ -2,10 +2,9 @@
 
 name: Fly Deploy
 on:
-  workflow_run:
-    workflows: ["Go"]
-    types:
-      - completed
+  push:
+    branches:
+      - main
 
 jobs:
   deploy:
