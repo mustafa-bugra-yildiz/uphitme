@@ -20,10 +20,11 @@ WORKDIR /src
 	COPY --from=tailwind-builder /src/bin /src/bin
 
 	COPY . .
-	RUN make coverage
+	RUN go test -v ./...
+	RUN go build -v -o uphitme .
 
 # runtime image
 FROM scratch
 WORKDIR /app
-COPY --from=main-builder /src/bin/main /app/uphitme
+COPY --from=main-builder /src/uphitme /app/uphitme
 CMD ["/app/uphitme"]
