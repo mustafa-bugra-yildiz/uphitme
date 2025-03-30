@@ -1,18 +1,16 @@
 # cli
 
 .PHONY: run
-run: bin/main
+run:
+	rm -rf bin
+	make bin/main
 	cd bin && npx dotenv-cli -e ../.env -- ./main
 
 .PHONY: coverage
-coverage:
+coverage: bin/main
 	go test -coverprofile=coverage.out ./...
 	go tool cover -html=coverage.out
 	rm coverage.out
-
-.PHONY: mocks
-mocks:
-	go generate ./...
 
 .PHONY: tools
 tools:
@@ -27,10 +25,9 @@ tools:
 
 # targets
 
-.PHONY: bin/main
 bin/main: bin/tailwind.css
+	go generate ./...
 	go build -v -o bin/main .
 
-.PHONY: bin/tailwind.css
 bin/tailwind.css: input.css
 	npx @tailwindcss/cli -i input.css -o bin/tailwind.css

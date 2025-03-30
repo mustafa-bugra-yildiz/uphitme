@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"os"
 	"testing"
 	"time"
 
@@ -16,10 +17,17 @@ import (
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
+	"github.com/mustafa-bugra-yildiz/uphitme/view"
 
 	"github.com/google/uuid"
 	"go.uber.org/mock/gomock"
 )
+
+func TestMain(m *testing.M) {
+	view.Setup("") // empty tailwind
+	code := m.Run()
+	os.Exit(code)
+}
 
 func TestHealthWorks(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -30,7 +38,7 @@ func TestHealthWorks(t *testing.T) {
 	taskRepo.EXPECT().ListPending(gomock.Any()).Times(1)
 	scheduler, _ := scheduler.New(context.Background(), taskRepo)
 
-	req := httptest.NewRequest(http.MethodGet, "/health", nil)
+	req := httptest.NewRequest(http.MethodGet, "/api/health", nil)
 
 	res := httptest.NewRecorder()
 	New(auth, taskRepo, userRepo, scheduler).ServeHTTP(res, req)
@@ -38,7 +46,14 @@ func TestHealthWorks(t *testing.T) {
 	got, _ := io.ReadAll(res.Body)
 	got = bytes.TrimSpace(got)
 
-	want, _ := json.Marshal(map[string]string{"status": "ok"})
+	data := map[string]any{
+		"status": "ok",
+	}
+	want, _ := json.Marshal(Response[map[string]any]{
+		Succeeded: true,
+		Data: &data,
+		Error: nil,
+	})
 	if bytes.Compare(got, want) != 0 {
 		t.Errorf("\ngot:  %q\nwant: %q", string(got), string(want))
 	}

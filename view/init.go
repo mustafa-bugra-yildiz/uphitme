@@ -25,9 +25,8 @@ var (
 	Dashboard *dashboard.Dashboard
 )
 
-func init() {
-	// include tailwind
-	t := template.Must(template.ParseFiles("tailwind.css"))
+func Setup(tailwind string) {
+	t := template.Must(template.New("tailwind.css").Parse(tailwind))
 
 	// include common functions
 	t = t.Funcs(template.FuncMap{

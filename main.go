@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	_ "embed"
 	"log"
 	"net/http"
 
@@ -11,17 +12,27 @@ import (
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 	"github.com/mustafa-bugra-yildiz/uphitme/router"
 	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
+	"github.com/mustafa-bugra-yildiz/uphitme/view"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+//go:embed bin/tailwind.css
+var tailwind string
+
 func main() {
+	// setup views
+	view.Setup(tailwind)
+
+	// setup db
 	db := connectDB()
 	defer db.Close()
 
+	// setup repos
 	taskRepo := task.NewRepo(db)
 	userRepo := user.NewRepo(db)
 
+	// setup modules
 	auth := auth.New(userRepo)
 
 	scheduler, err := scheduler.New(context.Background(), taskRepo)
@@ -29,6 +40,7 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// run server
 	log.Printf("Starting server on port %s", env.Port)
 	log.Fatal(http.ListenAndServe(
 		":"+env.Port,
