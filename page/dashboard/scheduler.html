@@ -1,0 +1,102 @@
+{{ define "content" }}
+<div class="card">
+	<div class="card-header">
+		<div class="card-title">Create New Task</div>
+	</div>
+	<div class="card-content">
+		<form action="/dashboard/scheduler/create" method="POST">
+			<div class="form-group">
+				<label for="title" class="form-label">Task Title</label>
+				<input type="text" id="title" name="title" class="form-input" placeholder="Enter task title" required>
+			</div>
+			<div class="form-group">
+				<label for="target" class="form-label">Target URL</label>
+				<input type="url" id="target" name="target" class="form-input" placeholder="https://example.com/api" required>
+			</div>
+			<div class="form-group">
+				<label for="payload" class="form-label">Request Payload (JSON)</label>
+				<textarea id="payload" name="payload" class="form-input" rows="5" placeholder='{"key": "value"}'></textarea>
+			</div>
+			<div class="form-group">
+				<label for="schedule" class="form-label">Schedule</label>
+				<input type="text" id="schedule" name="schedule" class="form-input" placeholder="*/5 * * * *" required>
+			</div>
+			<button type="submit" class="btn">Create Task</button>
+		</form>
+	</div>
+</div>
+
+<div class="card">
+	<div class="card-header">
+		<div class="card-title">Your Tasks</div>
+	</div>
+	<div class="card-content">
+		{{ range .tasks }}
+		<div class="task">
+			<div class="flex gap-8 items-center w-full task-header">
+				<!-- Status Icon -->
+				<div class="status {{ .Status }}">
+					{{ if eq .Status "pending" }}
+					<i class="fas fa-clock"></i>
+					{{ else if eq .Status "failed" }}
+					<i class="fas fa-times"></i>
+					{{ else if eq .Status "succeeded" }}
+					<i class="fas fa-check"></i>
+					{{ end }}
+				</div>
+				<div class="flex space-between w-full task-meta">
+					<div class="flex flex-col gap-2 justify-center">
+						<p class="title">{{ .Title }}</p>
+						<p class="target">{{ .Target.String }}</p>
+					</div>
+					<div class="time">
+						<p>
+							<i class="far fa-calendar-plus" data-tooltip="Created"></i>
+							{{ .CreatedAt.Format "Jan 2, 2006 3:04 PM" }}
+						</p>
+						<p>
+							<i class="fas fa-sync-alt" data-tooltip="Updated"></i>
+							{{ .UpdatedAt.Format "Jan 2, 2006 3:04 PM" }}
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<!-- Request Payload -->
+			<div>
+				<div class="section-label">Request Payload</div>
+				<code>
+					<pre>{{ jsonMarshalIndent .Payload }}</pre>
+				</code>
+			</div>
+
+			<!-- Conditional Content based on Status -->
+			{{ if eq .Status "failed" }}
+			<div class="error">
+				<p><strong>Error:</strong> {{ .Error }}</p>
+			</div>
+			{{ end }}
+
+			{{ if eq .Status "succeeded" }}
+			<div class="result">
+				<p><strong>Response:</strong> {{ .Code }} {{ httpStatusText .Code }}</p>
+				<code>
+					<pre>{{ jsonMarshalIndent .Body }}</pre>
+				</code>
+			</div>
+			{{ end }}
+		</div>
+		{{ end }}
+
+		<div class="pagination">
+			{{ if .prev }}
+			<a href="/dashboard/scheduler?page={{ .prev }}">← Previous</a>
+			{{ end }}
+			<p>Page {{ .page }}</p>
+			{{ if .next }}
+			<a href="/dashboard/scheduler?page={{ .next }}">Next →</a>
+			{{ end }}
+		</div>
+	</div>
+</div>
+{{ end }}

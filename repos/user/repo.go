@@ -9,7 +9,9 @@ import (
 
 //go:generate mockgen -typed -package user -destination mock.go . Repo
 type Repo interface {
-	Get(ctx context.Context, email string) (*User, error)
+	Get(ctx context.Context, id uuid.UUID) (*User, error)
+	GetByEmail(ctx context.Context, email string) (*User, error)
+
 	Create(
 		ctx context.Context,
 		fullName string,

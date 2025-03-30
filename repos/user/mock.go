@@ -13,6 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	uuid "github.com/google/uuid"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -79,18 +80,18 @@ func (c *MockRepoCreateCall) DoAndReturn(f func(context.Context, string, string,
 }
 
 // Get mocks base method.
-func (m *MockRepo) Get(ctx context.Context, email string) (*User, error) {
+func (m *MockRepo) Get(ctx context.Context, id uuid.UUID) (*User, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Get", ctx, email)
+	ret := m.ctrl.Call(m, "Get", ctx, id)
 	ret0, _ := ret[0].(*User)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // Get indicates an expected call of Get.
-func (mr *MockRepoMockRecorder) Get(ctx, email any) *MockRepoGetCall {
+func (mr *MockRepoMockRecorder) Get(ctx, id any) *MockRepoGetCall {
 	mr.mock.ctrl.T.Helper()
-	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockRepo)(nil).Get), ctx, email)
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockRepo)(nil).Get), ctx, id)
 	return &MockRepoGetCall{Call: call}
 }
 
@@ -106,13 +107,52 @@ func (c *MockRepoGetCall) Return(arg0 *User, arg1 error) *MockRepoGetCall {
 }
 
 // Do rewrite *gomock.Call.Do
-func (c *MockRepoGetCall) Do(f func(context.Context, string) (*User, error)) *MockRepoGetCall {
+func (c *MockRepoGetCall) Do(f func(context.Context, uuid.UUID) (*User, error)) *MockRepoGetCall {
 	c.Call = c.Call.Do(f)
 	return c
 }
 
 // DoAndReturn rewrite *gomock.Call.DoAndReturn
-func (c *MockRepoGetCall) DoAndReturn(f func(context.Context, string) (*User, error)) *MockRepoGetCall {
+func (c *MockRepoGetCall) DoAndReturn(f func(context.Context, uuid.UUID) (*User, error)) *MockRepoGetCall {
+	c.Call = c.Call.DoAndReturn(f)
+	return c
+}
+
+// GetByEmail mocks base method.
+func (m *MockRepo) GetByEmail(ctx context.Context, email string) (*User, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByEmail", ctx, email)
+	ret0, _ := ret[0].(*User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetByEmail indicates an expected call of GetByEmail.
+func (mr *MockRepoMockRecorder) GetByEmail(ctx, email any) *MockRepoGetByEmailCall {
+	mr.mock.ctrl.T.Helper()
+	call := mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByEmail", reflect.TypeOf((*MockRepo)(nil).GetByEmail), ctx, email)
+	return &MockRepoGetByEmailCall{Call: call}
+}
+
+// MockRepoGetByEmailCall wrap *gomock.Call
+type MockRepoGetByEmailCall struct {
+	*gomock.Call
+}
+
+// Return rewrite *gomock.Call.Return
+func (c *MockRepoGetByEmailCall) Return(arg0 *User, arg1 error) *MockRepoGetByEmailCall {
+	c.Call = c.Call.Return(arg0, arg1)
+	return c
+}
+
+// Do rewrite *gomock.Call.Do
+func (c *MockRepoGetByEmailCall) Do(f func(context.Context, string) (*User, error)) *MockRepoGetByEmailCall {
+	c.Call = c.Call.Do(f)
+	return c
+}
+
+// DoAndReturn rewrite *gomock.Call.DoAndReturn
+func (c *MockRepoGetByEmailCall) DoAndReturn(f func(context.Context, string) (*User, error)) *MockRepoGetByEmailCall {
 	c.Call = c.Call.DoAndReturn(f)
 	return c
 }

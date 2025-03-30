@@ -21,6 +21,25 @@ func New(userRepo user.Repo) *Auth {
 	return &Auth{userRepo: userRepo}
 }
 
+func (a *Auth) User(r *http.Request) (*user.User, error) {
+	claims, err := a.Verify(r)
+	if err != nil {
+		return nil, err
+	}
+
+	subject, err := uuid.Parse(claims.Subject)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := a.userRepo.Get(r.Context(), subject)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
 func (a *Auth) Verify(r *http.Request) (*Claims, error) {
 	cookie, err := r.Cookie(cookieName)
 	if err != nil {

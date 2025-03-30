@@ -14,12 +14,12 @@ import (
 	"github.com/mustafa-bugra-yildiz/uphitme/env"
 	"github.com/mustafa-bugra-yildiz/uphitme/middleware"
 	"github.com/mustafa-bugra-yildiz/uphitme/page"
+	"github.com/mustafa-bugra-yildiz/uphitme/page/dashboard"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 	"github.com/mustafa-bugra-yildiz/uphitme/scheduler"
 
 	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/sync/errgroup"
 )
 
 type state struct {
@@ -51,7 +51,12 @@ func New(
 	mux.HandleFunc("/sign-up/success", signUpSuccessHandler)
 	mux.HandleFunc("/sign-out", s.signOutHandler)
 
-	mux.HandleFunc("/dashboard", s.dashboardPageHandler)
+	dashboard := dashboard.New(auth, taskRepo, userRepo)
+	mux.HandleFunc("/dashboard", dashboard.Home)
+	mux.HandleFunc("/dashboard/scheduler", dashboard.Scheduler)
+	mux.HandleFunc("/dashboard/billing-usage", dashboard.BillingUsage)
+	mux.HandleFunc("/dashboard/profile", dashboard.Profile)
+
 	mux.HandleFunc("/health", healthHandler)
 	mux.HandleFunc("/api/schedule", s.scheduleHandler)
 
@@ -66,41 +71,6 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
 
 func landingPageHandler(w http.ResponseWriter, r *http.Request) {
 	err := page.Landing(w)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func (s state) dashboardPageHandler(w http.ResponseWriter, r *http.Request) {
-	_, err := s.auth.Verify(r)
-	if err != nil {
-		http.Redirect(w, r, "/sign-in", http.StatusUnauthorized)
-		return
-	}
-
-	g := new(errgroup.Group)
-
-	var tasks []task.Task
-	g.Go(func() error {
-		var err error
-		tasks, err = s.taskRepo.List(r.Context(), 1, 10)
-		return err
-	})
-
-	var count int
-	g.Go(func() error {
-		var err error
-		count, err = s.taskRepo.Count(r.Context())
-		return err
-	})
-
-	err = g.Wait()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	err = page.Dashboard(w, 1, 10, count, tasks)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -169,7 +139,7 @@ func (s state) signInHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user_, err := s.userRepo.Get(r.Context(), email)
+	user_, err := s.userRepo.GetByEmail(r.Context(), email)
 	if err == user.ErrUserNotFound {
 		err = errors.New("invalid credentials")
 		page.SignIn(w, email, err)
@@ -235,7 +205,7 @@ func (s state) signUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err = s.userRepo.Get(r.Context(), email)
+	_, err = s.userRepo.GetByEmail(r.Context(), email)
 	if err != user.ErrUserNotFound {
 		err = errors.New("there is already an account with that email")
 		page.SignUp(w, fullName, email, err)
