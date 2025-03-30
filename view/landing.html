@@ -1,0 +1,30 @@
+{{ define "title" }}
+	Task Scheduling Made Easy
+{{ end }}
+
+{{ define "content" }}
+	<div id="container" class="min-h-screen min-w-screen flex items-center justify-center p-8"></div>
+
+	<script>
+		new Vara(
+			"#container",
+			"https://rawcdn.githack.com/akzhy/Vara/ed6ab92fdf196596266ae76867c415fa659eb348/fonts/Satisfy/SatisfySL.json",
+			[
+				{
+					text: "We will be here soon!",
+					fontSize: 48,
+					y: 10
+				}, {
+					text: "See ya <3",
+					fontSize: 34,
+					color: "#f44336"
+				}
+			],
+			{
+				strokeWidth: 2,
+				textAlign: "center"
+			}
+		);
+	</script>
+{{ end }}
+

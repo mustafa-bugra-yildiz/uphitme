@@ -1,8 +1,11 @@
 # macOS produces this file
 .DS_Store
 
-# github.com/air-verse/air produces this file
-/tmp
+# release directory
+bin
 
 # please don't commit this file
 .env
+
+# damn, just for tailwind huh...
+node_modules

@@ -1,0 +1,22 @@
+{
+  "name": "uphit.me",
+  "version": "1.0.0",
+  "description": "Job Scheduling for everybody!",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mustafa-bugra-yildiz/uphitme.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mustafa-bugra-yildiz/uphitme/issues"
+  },
+  "homepage": "https://github.com/mustafa-bugra-yildiz/uphitme#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.0.17",
+    "tailwindcss": "^4.0.17"
+  }
+}

@@ -1,0 +1,121 @@
+{{ define "title" }}
+	Billing/Usage
+{{ end }}
+
+{{ define "tab" }}
+<div class="bg-white shadow rounded-lg overflow-hidden">
+	<div class="bg-gray-100 p-4">
+		<div class="text-lg font-semibold">Current Plan</div>
+	</div>
+	<div class="p-4">
+		<div class="flex justify-between items-center">
+			<div>
+				<h3 class="text-xl font-medium mb-1">Pro Plan</h3>
+				<p class="text-gray-600 text-sm">Access to all features with premium support.</p>
+			</div>
+			<div>
+				<button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Upgrade Plan</button>
+			</div>
+		</div>
+		
+		<div class="mt-6">
+			<div class="font-semibold text-sm">Usage This Month</div>
+			<div class="h-2 bg-gray-200 rounded-full mt-2 overflow-hidden">
+				<div class="h-full bg-blue-600" style="width: 75%;"></div>
+			</div>
+			<div class="flex justify-between text-xs mt-2">
+				<span>120 tasks</span>
+				<span>160 tasks</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="bg-white shadow rounded-lg overflow-hidden mt-4">
+	<div class="bg-gray-100 p-4">
+		<div class="text-lg font-semibold">Billing History</div>
+	</div>
+	<div class="p-4">
+		<table class="min-w-full table-auto">
+			<thead>
+				<tr class="border-b">
+					<th class="px-4 py-2 text-left">Date</th>
+					<th class="px-4 py-2 text-left">Description</th>
+					<th class="px-4 py-2 text-left">Amount</th>
+					<th class="px-4 py-2 text-left">Status</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="border-b">
+					<td class="px-4 py-2">Jan 15, 2025</td>
+					<td class="px-4 py-2">Monthly Subscription</td>
+					<td class="px-4 py-2">$29.99</td>
+					<td class="px-4 py-2">
+						<span class="px-2 py-1 rounded-full bg-green-200 text-green-800">
+							Paid
+						</span>
+					</td>
+				</tr>
+				<tr class="border-b">
+					<td class="px-4 py-2">Feb 15, 2025</td>
+					<td class="px-4 py-2">Monthly Subscription</td>
+					<td class="px-4 py-2">$29.99</td>
+					<td class="px-4 py-2">
+						<span class="px-2 py-1 rounded-full bg-green-200 text-green-800">
+							Paid
+						</span>
+					</td>
+				</tr>
+				<tr class="border-b">
+					<td class="px-4 py-2">Mar 15, 2025</td>
+					<td class="px-4 py-2">Monthly Subscription</td>
+					<td class="px-4 py-2">$29.99</td>
+					<td class="px-4 py-2">
+						<span class="px-2 py-1 rounded-full bg-yellow-200 text-yellow-800">
+							Pending
+						</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="bg-white shadow rounded-lg overflow-hidden mt-4">
+	<div class="bg-gray-100 p-4">
+		<div class="text-lg font-semibold">Payment Methods</div>
+	</div>
+	<div class="p-4">
+		<div class="flex justify-between items-center border-b py-3">
+			<div class="flex items-center space-x-4">
+				<i class="text-2xl fab fa-cc-visa"></i>
+				<div>
+					<div class="font-medium">John Doe</div>
+					<div class="text-xs text-gray-600">**** **** **** 1234</div>
+				</div>
+			</div>
+			<div>
+				<span class="px-2 py-1 text-xs font-medium text-green-800 bg-green-200 rounded-full">Default</span>
+			</div>
+		</div>
+		<div class="flex justify-between items-center border-b py-3">
+			<div class="flex items-center space-x-4">
+				<i class="text-2xl fab fa-cc-mastercard"></i>
+				<div>
+					<div class="font-medium">Jane Smith</div>
+					<div class="text-xs text-gray-600">**** **** **** 5678</div>
+				</div>
+			</div>
+			<div>
+				<button class="px-3 py-1 text-xs text-gray-600 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500">Set Default</button>
+			</div>
+		</div>
+		
+		<div class="mt-6">
+			<button class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+				<i class="fas fa-plus mr-2"></i> Add Payment Method
+			</button>
+		</div>
+	</div>
+</div>
+{{ end }}
