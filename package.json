@@ -17,6 +17,7 @@
   "homepage": "https://github.com/mustafa-bugra-yildiz/uphitme#readme",
   "dependencies": {
     "@tailwindcss/cli": "^4.0.17",
+    "@tailwindcss/typography": "^0.5.16",
     "tailwindcss": "^4.0.17"
   }
 }

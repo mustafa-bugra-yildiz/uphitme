@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/mustafa-bugra-yildiz/uphitme/view/dashboard"
+	"github.com/mustafa-bugra-yildiz/uphitme/view/docs"
 )
 
 //go:embed *
@@ -23,6 +24,7 @@ var (
 	signUpWIP     *template.Template
 
 	Dashboard *dashboard.Dashboard
+	Docs      *docs.Docs
 )
 
 func Setup(tailwind string) {
@@ -67,6 +69,9 @@ func Setup(tailwind string) {
 
 	// setup dashboard
 	Dashboard = dashboard.New(t)
+
+	// setup docs
+	Docs = docs.New(t)
 }
 
 func Landing(w io.Writer) error {

@@ -50,6 +50,9 @@ func New(
 	mux.HandleFunc("/dashboard/billing-usage", s.dashboardBillingUsageHandler)
 	mux.HandleFunc("/dashboard/profile", s.dashboardProfileHandler)
 
+	// docs
+	mux.HandleFunc("/docs/scheduler-api", s.docsSchedulerApiHandler)
+
 	// middleware
 	handler := middleware.Logger(mux)
 

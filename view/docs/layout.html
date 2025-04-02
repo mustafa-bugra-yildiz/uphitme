@@ -1,0 +1,164 @@
+{{ define "content" }}
+<!-- Mobile Menu Toggle -->
+<button
+    class="menu-toggle fixed top-4 left-4 z-50 bg-[#333333] border border-[#444444] rounded-md p-2 cursor-pointer shadow-sm hover:bg-[#3c3c3c] transition-colors md:hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-foreground" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+</button>
+
+<!-- Documentation Sidebar -->
+<aside
+    class="sidebar fixed h-full w-full md:w-[280px] bg-[#1c1c1c] border-r border-[#333333] flex flex-col z-40 transition-all duration-300 ease-in-out transform -translate-x-full md:translate-x-0 overflow-y-auto">
+    <div class="sidebar-header p-6 border-b border-[#333333]">
+        <h1 class="text-xl font-bold text-foreground">Documentation</h1>
+        <p class="text-sm text-[#d1d1d1] mt-1">uphit.me Developer Guide</p>
+    </div>
+
+    <nav class="flex-1 py-4 px-3">
+        <div class="mb-6">
+            <h2 class="text-xs font-semibold text-[#a0a0a0] uppercase tracking-wider mb-3 px-3">Getting Started</h2>
+            <div class="space-y-1">
+                <a href="/docs/introduction"
+                    class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-[#d1d1d1] hover:bg-[#333333] hover:text-foreground transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-[#a0a0a0]" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Introduction
+                </a>
+                <a href="/docs/quickstart"
+                    class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-[#d1d1d1] hover:bg-[#333333] hover:text-foreground transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-[#a0a0a0]" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                    Quick Start
+                </a>
+                <a href="/docs/installation"
+                    class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-[#d1d1d1] hover:bg-[#333333] hover:text-foreground transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-[#a0a0a0]" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Installation
+                </a>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h2 class="text-xs font-semibold text-[#a0a0a0] uppercase tracking-wider mb-3 px-3">API Reference</h2>
+            <div class="space-y-1">
+                <a href="/docs/authentication"
+                    class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-[#d1d1d1] hover:bg-[#333333] hover:text-foreground transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-[#a0a0a0]" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    Authentication
+                </a>
+                <a href="/docs/scheduler-api"
+                    class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-[#d1d1d1] hover:bg-[#333333] hover:text-foreground transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-[#a0a0a0]" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Scheduler API
+                </a>
+                <a href="/docs/webhooks"
+                    class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-[#d1d1d1] hover:bg-[#333333] hover:text-foreground transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-[#a0a0a0]" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    Webhooks
+                </a>
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h2 class="text-xs font-semibold text-[#a0a0a0] uppercase tracking-wider mb-3 px-3">Guides</h2>
+            <div class="space-y-1">
+                <a href="/docs/best-practices"
+                    class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-[#d1d1d1] hover:bg-[#333333] hover:text-foreground transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-[#a0a0a0]" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    Best Practices
+                </a>
+                <a href="/docs/troubleshooting"
+                    class="nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md text-[#d1d1d1] hover:bg-[#333333] hover:text-foreground transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-[#a0a0a0]" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Troubleshooting
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mt-auto p-4 border-t border-[#333333]">
+        <a href="/dashboard"
+            class="w-full flex items-center px-3 py-2 text-sm font-medium rounded-md text-[#d1d1d1] bg-[#333333] hover:bg-[#444444] transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Back to Dashboard
+        </a>
+    </div>
+</aside>
+
+<!-- Main Content -->
+<main class="main-content transition-all duration-300 md:ml-[280px] min-h-screen">
+    <div class="content-area max-w-4xl mx-auto p-4 md:p-8 pt-16 md:pt-8">
+        <div
+            class="py-8 doc-content prose prose-invert max-w-none prose-headings:font-semibold prose-headings:text-foreground prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-h4:text-lg prose-p:text-[#d1d1d1] prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline prose-blockquote:border-l-4 prose-blockquote:border-[#333333] prose-blockquote:pl-4 prose-blockquote:italic prose-code:text-[#d1d1d1] prose-code:bg-[#242424] prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none">
+            {{ template "tab" . }}
+        </div>
+    </div>
+</main>
+
+<!-- Overlay for mobile -->
+<div class="overlay fixed inset-0 bg-black bg-opacity-50 z-30 hidden transition-opacity duration-300"></div>
+
+<!-- JavaScript for Mobile Toggle -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('translate-x-0');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('translate-x-0');
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                overlay.classList.add('hidden');
+            }
+        });
+    });
+</script>
+{{ end }}
