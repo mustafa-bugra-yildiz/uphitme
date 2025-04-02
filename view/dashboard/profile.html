@@ -1,128 +1,198 @@
 {{ define "title" }}
-	Profile
+Profile
 {{ end }}
 
 {{ define "tab" }}
-<!-- Account Information Section -->
-<div class="bg-white shadow rounded-lg overflow-hidden mb-6">
-	<div class="bg-gray-100 p-4">
-		<div class="text-lg font-semibold">Account Information</div>
+<div class="p-6 text-foreground">
+	<!-- Page Header -->
+	<div class="mb-8">
+		<h1 class="text-2xl font-semibold">Account Settings</h1>
+		<p class="text-[#d1d1d1] mt-1">Manage your profile information and preferences</p>
 	</div>
-	<div class="p-4">
-		<form action="/dashboard/profile/update" method="POST">
-			<div class="mb-4">
-				<label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-				<input type="text" id="name" name="name" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ .profile.name }}" required>
-			</div>
-			<div class="mb-4">
-				<label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-				<input type="email" id="email" name="email" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ .profile.email }}" required>
-			</div>
-			<div class="mb-4">
-				<label for="company" class="block text-sm font-medium text-gray-700">Company (Optional)</label>
-				<input type="text" id="company" name="company" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="{{ .profile.company }}">
-			</div>
-			<button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Save Changes</button>
-		</form>
-	</div>
-</div>
 
-<!-- Change Password Section -->
-<div class="bg-white shadow rounded-lg overflow-hidden mb-6">
-	<div class="bg-gray-100 p-4">
-		<div class="text-lg font-semibold">Change Password</div>
-	</div>
-	<div class="p-4">
-		<form action="/dashboard/profile/password" method="POST">
-			<div class="mb-4">
-				<label for="current_password" class="block text-sm font-medium text-gray-700">Current Password</label>
-				<input type="password" id="current_password" name="current_password" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+	<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+		<div class="lg:col-span-2 space-y-6">
+			<!-- Account Information Section -->
+			<div class="rounded-lg overflow-hidden border border-[#333333]">
+				<div class="bg-[#242424] p-4 border-b border-[#333333]">
+					<h2 class="text-lg font-medium">Personal Information</h2>
+				</div>
+				<div class="p-6">
+					<form action="/dashboard/profile/update" method="POST">
+						<div class="space-y-5">
+							<div>
+								<label for="name" class="block text-sm font-medium mb-1.5">Full Name</label>
+								<input type="text" id="name" name="name"
+									class="w-full px-3 py-2 border-0 border-b border-[#333333] bg-transparent text-foreground focus:outline-none focus:border-[#666666] transition-colors"
+									value="{{ .user.FullName }}" required>
+							</div>
+							<div>
+								<label for="email" class="block text-sm font-medium mb-1.5">Email Address</label>
+								<input type="email" id="email" name="email"
+									class="w-full px-3 py-2 border-0 border-b border-[#333333] bg-transparent text-foreground focus:outline-none focus:border-[#666666] transition-colors"
+									value="{{ .user.Email }}" required>
+							</div>
+							<button type="submit"
+								class="w-full px-4 py-2.5 bg-[#333333] text-foreground rounded-md hover:bg-[#3c3c3c] transition-colors mt-6">
+								Save Changes
+							</button>
+						</div>
+					</form>
+				</div>
 			</div>
-			<div class="mb-4">
-				<label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
-				<input type="password" id="new_password" name="new_password" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<div class="mb-4">
-				<label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm New Password</label>
-				<input type="password" id="confirm_password" name="confirm_password" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-			</div>
-			<button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Update Password</button>
-		</form>
-	</div>
-</div>
 
-<!-- API Keys Section -->
-<div class="bg-white shadow rounded-lg overflow-hidden mb-6">
-	<div class="bg-gray-100 p-4">
-		<div class="text-lg font-semibold">API Keys</div>
-	</div>
-	<div class="p-4">
-		<div class="overflow-x-auto">
-			<table class="min-w-full table-auto">
-				<thead>
-					<tr>
-						<th class="px-4 py-2 text-left">Key Name</th>
-						<th class="px-4 py-2 text-left">Created</th>
-						<th class="px-4 py-2 text-left">Last Used</th>
-						<th class="px-4 py-2 text-left">Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{{ range .profile.apiKeys }}
-					<tr>
-						<td class="px-4 py-2">{{ .Name }}</td>
-						<td class="px-4 py-2">{{ .CreatedAt.Format "Jan 2, 2006" }}</td>
-						<td class="px-4 py-2">{{ if .LastUsed }}{{ .LastUsed.Format "Jan 2, 2006" }}{{ else }}Never{{ end }}</td>
-						<td class="px-4 py-2">
-							<a href="#" class="text-red-600 text-sm">Revoke</a>
-						</td>
-					</tr>
-					{{ end }}
-				</tbody>
-			</table>
+			<!-- Change Password Section -->
+			<div class="rounded-lg overflow-hidden border border-[#333333]">
+				<div class="bg-[#242424] p-4 border-b border-[#333333]">
+					<h2 class="text-lg font-medium">Security</h2>
+				</div>
+				<div class="p-6">
+					<form action="/dashboard/profile/password" method="POST">
+						<div class="space-y-5">
+							<div>
+								<label for="current_password" class="block text-sm font-medium mb-1.5">Current
+									Password</label>
+								<input type="password" id="current_password" name="current_password"
+									class="w-full px-3 py-2 border-0 border-b border-[#333333] bg-transparent text-foreground focus:outline-none focus:border-[#666666] transition-colors"
+									required>
+							</div>
+							<div>
+								<label for="new_password" class="block text-sm font-medium mb-1.5">New Password</label>
+								<input type="password" id="new_password" name="new_password"
+									class="w-full px-3 py-2 border-0 border-b border-[#333333] bg-transparent text-foreground focus:outline-none focus:border-[#666666] transition-colors"
+									required>
+							</div>
+							<div>
+								<label for="confirm_password" class="block text-sm font-medium mb-1.5">Confirm New
+									Password</label>
+								<input type="password" id="confirm_password" name="confirm_password"
+									class="w-full px-3 py-2 border-0 border-b border-[#333333] bg-transparent text-foreground focus:outline-none focus:border-[#666666] transition-colors"
+									required>
+							</div>
+							<button type="submit"
+								class="w-full px-4 py-2.5 bg-[#333333] text-foreground rounded-md hover:bg-[#3c3c3c] transition-colors mt-6">
+								Update Password
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<!-- API Keys Section -->
+			<div class="rounded-lg overflow-hidden border border-[#333333]">
+				<div class="bg-[#242424] p-4 border-b border-[#333333] flex justify-between items-center">
+					<h2 class="text-lg font-medium">API Keys</h2>
+					<button
+						class="px-3 py-1.5 bg-[#333333] text-sm text-foreground rounded-md hover:bg-[#3c3c3c] transition-colors flex items-center">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24"
+							stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+						</svg>
+						New Key
+					</button>
+				</div>
+				<div class="p-6">
+					<div class="overflow-x-auto">
+						<table class="w-full">
+							<thead>
+								<tr class="border-b border-[#333333]">
+									<th class="text-left py-3 px-4 text-[#d1d1d1] font-medium text-sm">Key Name</th>
+									<th class="text-left py-3 px-4 text-[#d1d1d1] font-medium text-sm">Created</th>
+									<th class="text-left py-3 px-4 text-[#d1d1d1] font-medium text-sm">Last Used</th>
+									<th class="text-right py-3 px-4 text-[#d1d1d1] font-medium text-sm">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								{{ range .profile.apiKeys }}
+								<tr class="border-b border-[#333333]">
+									<td class="py-3 px-4">{{ .Name }}</td>
+									<td class="py-3 px-4 text-[#d1d1d1]">{{ .CreatedAt.Format "Jan 2, 2006" }}</td>
+									<td class="py-3 px-4 text-[#d1d1d1]">
+										{{ if .LastUsed }}
+										{{ .LastUsed.Format "Jan 2, 2006" }}
+										{{ else }}Never{{ end }}</td>
+									<td class="py-3 px-4 text-right">
+										<button class="text-red-400 text-sm hover:text-red-300">Revoke</button>
+									</td>
+								</tr>
+								{{ end }}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="mt-6">
-			<button class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-				<i class="fas fa-plus mr-2"></i> Generate New API Key
-			</button>
-		</div>
-	</div>
-</div>
 
-<!-- Notification Settings Section -->
-<div class="bg-white shadow rounded-lg overflow-hidden mb-6">
-	<div class="bg-gray-100 p-4">
-		<div class="text-lg font-semibold">Notification Settings</div>
-	</div>
-	<div class="p-4">
-		<form action="/dashboard/profile/notifications" method="POST">
-			<div class="mb-4 space-y-4">
-				<div class="flex items-center">
-					<input type="checkbox" id="notify_task_failure" name="notify_task_failure" class="form-checkbox h-5 w-5 text-blue-600" {{ if .profile.notifications.taskFailure }}checked{{ end }}>
-					<label for="notify_task_failure" class="ml-2 text-sm">Email me when a task fails</label>
+		<div class="space-y-6">
+			<!-- Notification Settings Section -->
+			<div class="rounded-lg overflow-hidden border border-[#333333]">
+				<div class="bg-[#242424] p-4 border-b border-[#333333]">
+					<h2 class="text-lg font-medium">Notifications</h2>
 				</div>
-				<div class="flex items-center">
-					<input type="checkbox" id="notify_billing" name="notify_billing" class="form-checkbox h-5 w-5 text-blue-600" {{ if .profile.notifications.billing }}checked{{ end }}>
-					<label for="notify_billing" class="ml-2 text-sm">Email me about billing updates</label>
-				</div>
-				<div class="flex items-center">
-					<input type="checkbox" id="notify_news" name="notify_news" class="form-checkbox h-5 w-5 text-blue-600" {{ if .profile.notifications.news }}checked{{ end }}>
-					<label for="notify_news" class="ml-2 text-sm">Email me about product updates and news</label>
+				<div class="p-6">
+					<form action="/dashboard/profile/notifications" method="POST">
+						<div class="space-y-5">
+							<div class="flex items-start">
+								<div class="flex items-center h-5">
+									<input id="notify_task_failure" name="notify_task_failure" type="checkbox"
+										class="h-4 w-4 bg-transparent border-[#333333] rounded accent-[#3c3c3c]" {{ if
+										.profile.notifications.taskFailure }}checked{{ end }}>
+								</div>
+								<div class="ml-3">
+									<label for="notify_task_failure" class="text-sm">Task failures</label>
+									<p class="text-[#a0a0a0] text-xs mt-0.5">Get notified when a scheduled task fails to
+										execute</p>
+								</div>
+							</div>
+							<div class="flex items-start">
+								<div class="flex items-center h-5">
+									<input id="notify_billing" name="notify_billing" type="checkbox"
+										class="h-4 w-4 bg-transparent border-[#333333] rounded accent-[#3c3c3c]" {{ if
+										.profile.notifications.billing }}checked{{ end }}>
+								</div>
+								<div class="ml-3">
+									<label for="notify_billing" class="text-sm">Billing updates</label>
+									<p class="text-[#a0a0a0] text-xs mt-0.5">Receive notifications about billing and
+										subscription changes</p>
+								</div>
+							</div>
+							<div class="flex items-start">
+								<div class="flex items-center h-5">
+									<input id="notify_news" name="notify_news" type="checkbox"
+										class="h-4 w-4 bg-transparent border-[#333333] rounded accent-[#3c3c3c]" {{ if
+										.profile.notifications.news }}checked{{ end }}>
+								</div>
+								<div class="ml-3">
+									<label for="notify_news" class="text-sm">Product updates</label>
+									<p class="text-[#a0a0a0] text-xs mt-0.5">Stay informed about new features and
+										improvements</p>
+								</div>
+							</div>
+							<button type="submit"
+								class="w-full px-4 py-2.5 bg-[#333333] text-foreground rounded-md hover:bg-[#3c3c3c] transition-colors mt-6">
+								Save Preferences
+							</button>
+						</div>
+					</form>
 				</div>
 			</div>
-			<button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Save Preferences</button>
-		</form>
-	</div>
-</div>
 
-<!-- Danger Zone Section -->
-<div class="bg-white shadow rounded-lg overflow-hidden mb-6">
-	<div class="bg-gray-100 p-4">
-		<div class="text-lg font-semibold">Danger Zone</div>
-	</div>
-	<div class="p-4">
-		<p class="mb-4 text-gray-600">Once you delete your account, there is no going back. Please be certain.</p>
-		<button class="w-full px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">Delete Account</button>
+			<!-- Danger Zone Section -->
+			<div class="rounded-lg overflow-hidden border border-[#333333]">
+				<div class="bg-[#242424] p-4 border-b border-[#333333]">
+					<h2 class="text-lg font-medium text-red-400">Danger Zone</h2>
+				</div>
+				<div class="p-6">
+					<p class="text-[#d1d1d1] text-sm mb-4">This action cannot be undone. All your data will be
+						permanently deleted.</p>
+					<button
+						class="w-full px-4 py-2.5 bg-transparent text-red-400 border border-red-800 rounded-md hover:bg-[#331f1f] transition-colors">
+						Delete Account
+					</button>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 {{ end }}
