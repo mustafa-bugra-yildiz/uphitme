@@ -1,86 +1,147 @@
 {{ define "title" }}
-	Scheduler
+  Scheduler
 {{ end }}
 
 {{ define "tab" }}
-<div class="bg-white shadow rounded-lg overflow-hidden">
-	<div class="bg-gray-100 p-4">
-		<div class="text-lg font-semibold">Create New Task</div>
-	</div>
-	<div class="p-4">
-		<form action="/dashboard/scheduler/create" method="POST">
-			<div class="mb-4">
-				<label for="title" class="block text-sm font-medium text-gray-700">Task Title</label>
-				<input type="text" id="title" name="title" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter task title" required>
-			</div>
-			<div class="mb-4">
-				<label for="target" class="block text-sm font-medium text-gray-700">Target URL</label>
-				<input type="url" id="target" name="target" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://example.com/api" required>
-			</div>
-			<div class="mb-4">
-				<label for="payload" class="block text-sm font-medium text-gray-700">Request Payload (JSON)</label>
-				<textarea id="payload" name="payload" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" rows="5" placeholder='{"key": "value"}'></textarea>
-			</div>
-			<div class="mb-4">
-				<label for="schedule" class="block text-sm font-medium text-gray-700">Schedule</label>
-				<input type="text" id="schedule" name="schedule" class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="*/5 * * * *" required>
-			</div>
-			<button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Create Task</button>
-		</form>
-	</div>
-</div>
+<div class="p-6 space-y-6">
+  <!-- Create New Task Form -->
+  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+      <h3 class="text-base font-medium text-gray-800">Create New Task</h3>
+    </div>
+    <div class="p-6">
+      <form action="/dashboard/scheduler/create" method="POST" class="space-y-5">
+        <div>
+          <label for="title" class="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
+          <input 
+            type="text" 
+            id="title" 
+            name="title" 
+            class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-sm" 
+            required
+          >
+        </div>
+        
+        <div>
+          <label for="target" class="block text-sm font-medium text-gray-700 mb-1">Target URL</label>
+          <input 
+            type="url" 
+            id="target" 
+            name="target" 
+            class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-sm" 
+            required
+          >
+        </div>
+        
+        <div>
+          <label for="payload" class="block text-sm font-medium text-gray-700 mb-1">Request Payload (JSON)</label>
+          <textarea 
+            id="payload" 
+            name="payload" 
+            rows="5" 
+            class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-sm font-mono"
+          ></textarea>
+        </div>
+        
+        <div>
+          <label for="schedule" class="block text-sm font-medium text-gray-700 mb-1">Schedule</label>
+          <input 
+            type="text" 
+            id="schedule" 
+            name="schedule" 
+            placeholder="e.g. */5 * * * * (every 5 minutes)" 
+            class="w-full px-3 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400 text-sm" 
+            required
+          >
+        </div>
+        
+        <button 
+          type="submit" 
+          class="w-full px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-md text-sm font-medium transition-colors"
+        >
+          Create Task
+        </button>
+      </form>
+    </div>
+  </div>
 
-<div class="bg-white shadow rounded-lg overflow-hidden mt-6">
-	<div class="bg-gray-100 p-4">
-		<div class="text-lg font-semibold">Your Tasks</div>
-	</div>
-	<div class="p-4">
-		<!-- Task List (Iterating through tasks with mock data) -->
-		<div class="mb-6">
-			<div class="flex gap-8 items-center mb-4">
-				<!-- Status Icon -->
-				<div class="text-gray-500">
-					<i class="fas fa-clock"></i> <!-- This can be dynamic depending on status -->
-				</div>
-				<div class="flex justify-between w-full">
-					<div class="flex flex-col gap-2">
-						<p class="font-semibold">Task Title</p>
-						<p class="text-gray-600">https://example.com/api</p>
-					</div>
-					<div class="text-right text-sm text-gray-500">
-						<p><i class="far fa-calendar-plus"></i> Jan 2, 2025 3:04 PM</p>
-						<p><i class="fas fa-sync-alt"></i> Jan 2, 2025 3:05 PM</p>
-					</div>
-				</div>
-			</div>
-
-			<!-- Request Payload -->
-			<div>
-				<div class="text-sm font-medium text-gray-700">Request Payload</div>
-				<code class="block mt-2 bg-gray-100 p-2 rounded text-sm">
-					<pre>{"key": "value"}</pre>
-				</code>
-			</div>
-
-			<!-- Conditional Content based on Status -->
-			<div class="mt-4 bg-yellow-100 text-yellow-700 p-4 rounded-md">
-				<p><strong>Error:</strong> Task failed due to an unknown error.</p>
-			</div>
-
-			<div class="mt-4 bg-green-100 text-green-700 p-4 rounded-md">
-				<p><strong>Response:</strong> 200 OK</p>
-				<code class="block mt-2 bg-gray-100 p-2 rounded text-sm">
-					<pre>{"response": "Success"}</pre>
-				</code>
-			</div>
-		</div>
-
-		<!-- Pagination -->
-		<div class="flex justify-between items-center text-sm mt-6">
-			<a href="/dashboard/scheduler?page=1" class="text-blue-600 hover:text-blue-700">← Previous</a>
-			<p>Page 1</p>
-			<a href="/dashboard/scheduler?page=2" class="text-blue-600 hover:text-blue-700">Next →</a>
-		</div>
-	</div>
+  <!-- Task List -->
+  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+      <h3 class="text-base font-medium text-gray-800">Your Tasks</h3>
+      <div class="flex items-center space-x-2">
+        <button class="p-1 rounded-md hover:bg-gray-100 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <div class="divide-y divide-gray-100">
+      <!-- Task Item -->
+      <div class="p-6">
+        <div class="flex flex-col sm:flex-row justify-between w-full mb-4">
+          <div class="flex flex-col gap-1">
+            <p class="font-medium text-gray-800">Task Title</p>
+            <p class="text-sm text-gray-500">https://example.com/api</p>
+          </div>
+          <div class="text-right text-xs text-gray-500 mt-2 sm:mt-0">
+            <p class="flex items-center justify-end gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              Created: Jan 2, 2025 3:04 PM
+            </p>
+            <p class="flex items-center justify-end gap-1.5 mt-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Last Run: Jan 2, 2025 3:05 PM
+            </p>
+          </div>
+        </div>
+        
+        <!-- Request Payload -->
+        <div class="mt-4">
+          <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Request Payload</p>
+          <div class="bg-[#fbfbfa] border border-gray-100 rounded-md p-3 overflow-x-auto">
+            <pre class="text-xs font-mono text-gray-700">{"key": "value"}</pre>
+          </div>
+        </div>
+        
+        <!-- Status Content -->
+        <div class="mt-4 bg-amber-50 border border-amber-100 text-amber-800 p-3 rounded-md text-sm">
+          <p><span class="font-medium">Error:</span> Task failed due to an unknown error.</p>
+        </div>
+        
+        <div class="mt-4 bg-emerald-50 border border-emerald-100 text-emerald-800 p-3 rounded-md text-sm">
+          <p><span class="font-medium">Response:</span> 200 OK</p>
+          <div class="bg-white border border-gray-100 rounded-md mt-2 p-3 overflow-x-auto">
+            <pre class="text-xs font-mono text-gray-700">{"response": "Success"}</pre>
+          </div>
+        </div>
+      </div>
+      
+      <!-- You can add more task items here -->
+    </div>
+    
+    <!-- Pagination -->
+    <div class="flex justify-between items-center px-6 py-4 border-t border-gray-100 text-sm">
+      <a href="/dashboard/scheduler?page=1" class="text-gray-600 hover:text-gray-900 flex items-center gap-1 hover:underline transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Previous
+      </a>
+      <p class="text-gray-500">Page 1</p>
+      <a href="/dashboard/scheduler?page=2" class="text-gray-600 hover:text-gray-900 flex items-center gap-1 hover:underline transition-colors">
+        Next
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </div>
 </div>
 {{ end }}

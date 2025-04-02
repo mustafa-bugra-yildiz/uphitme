@@ -1,30 +1,154 @@
 {{ define "title" }}
-	Task Scheduling Made Easy
+UpHit.me - Job Scheduling for Everybody
 {{ end }}
 
 {{ define "content" }}
-	<div id="container" class="min-h-screen min-w-screen flex items-center justify-center p-8"></div>
+<div class="min-h-screen bg-background text-foreground flex flex-col">
+	<!-- Hero Section with Navigation -->
+	<div class="relative overflow-hidden">
+		<nav class="w-full max-w-7xl mx-auto flex justify-between items-center py-6 px-6">
+			<div class="flex items-center">
+				<h1 class="text-2xl font-bold">UpHit.me</h1>
+			</div>
+			<div class="flex items-center gap-4">
+				<a href="/sign-in" class="text-[#d1d1d1] hover:text-foreground transition">Sign In</a>
+				<a href="/sign-up"
+					class="px-4 py-2 bg-[#333333] text-foreground rounded-md hover:bg-[#3c3c3c] transition">Sign
+					Up Free</a>
+			</div>
+		</nav>
 
-	<script>
-		new Vara(
-			"#container",
-			"https://rawcdn.githack.com/akzhy/Vara/ed6ab92fdf196596266ae76867c415fa659eb348/fonts/Satisfy/SatisfySL.json",
-			[
-				{
-					text: "We will be here soon!",
-					fontSize: 48,
-					y: 10
-				}, {
-					text: "See ya <3",
-					fontSize: 34,
-					color: "#f44336"
-				}
-			],
-			{
-				strokeWidth: 2,
-				textAlign: "center"
-			}
-		);
-	</script>
+		<div class="max-w-7xl mx-auto px-6 pt-16 pb-24 md:pt-24 md:pb-32">
+			<div class="text-center md:text-left md:flex md:items-center md:gap-12">
+				<div class="md:w-1/2">
+					<h2 class="text-4xl md:text-5xl font-bold leading-tight">Job Scheduling Made Simple</h2>
+					<p class="mt-6 text-xl text-[#d1d1d1] max-w-xl mx-auto md:mx-0">
+						Schedule API calls, webhooks, and tasks with precision. Never worry about cron jobs again.
+					</p>
+					<div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+						<a href="/sign-up"
+							class="px-6 py-3 bg-[#333333] text-foreground text-lg font-medium rounded-md hover:bg-[#3c3c3c] transition">Get
+							Started Free</a>
+						<a href="#features"
+							class="px-6 py-3 border border-[#333333] text-[#d1d1d1] text-lg font-medium rounded-md hover:bg-[#1c1c1c] transition">Learn
+							More</a>
+					</div>
+				</div>
+				<div class="hidden md:block md:w-1/2">
+					<div class="bg-[#1c1c1c] p-6 rounded-lg shadow-xl">
+						<pre class="text-[#d1d1d1]"><code>POST /api/schedule
+{
+  "target": "https://your-api.com/endpoint",
+  "payload": { "message": "Hello World" },
+  "schedule": "2024-04-15T09:00:00Z"
+}</code></pre>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Features Section -->
+	<div id="features" class="bg-[#1c1c1c] py-20">
+		<div class="max-w-7xl mx-auto px-6">
+			<h3 class="text-3xl font-bold text-center">Why Choose UpHit.me?</h3>
+
+			<div class="mt-16 grid md:grid-cols-3 gap-10">
+				<div class="bg-background p-6 rounded-lg">
+					<div class="w-12 h-12 bg-[#333333] rounded-full flex items-center justify-center mb-4">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-foreground" fill="none"
+							viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+					</div>
+					<h4 class="text-xl font-semibold">Precise Scheduling</h4>
+					<p class="mt-2 text-[#d1d1d1]">Schedule tasks down to the second with our intuitive dashboard.</p>
+				</div>
+
+				<div class="bg-background p-6 rounded-lg">
+					<div class="w-12 h-12 bg-[#333333] rounded-full flex items-center justify-center mb-4">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-foreground" fill="none"
+							viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+					</div>
+					<h4 class="text-xl font-semibold">Reliable Delivery</h4>
+					<p class="mt-2 text-[#d1d1d1]">Our robust infrastructure ensures your scheduled tasks run on time,
+						every time.</p>
+				</div>
+
+				<div class="bg-background p-6 rounded-lg">
+					<div class="w-12 h-12 bg-[#333333] rounded-full flex items-center justify-center mb-4">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-foreground" fill="none"
+							viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+								d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+						</svg>
+					</div>
+					<h4 class="text-xl font-semibold">Detailed Analytics</h4>
+					<p class="mt-2 text-[#d1d1d1]">Track all your scheduled jobs with comprehensive logs and
+						notifications.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- How It Works Section -->
+	<div class="py-20">
+		<div class="max-w-7xl mx-auto px-6">
+			<h3 class="text-3xl font-bold text-center">How It Works</h3>
+
+			<div class="mt-12 grid md:grid-cols-3 gap-8">
+				<div class="text-center">
+					<div
+						class="w-16 h-16 bg-[#333333] rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+						1</div>
+					<h4 class="text-xl font-semibold">Sign Up</h4>
+					<p class="mt-2 text-[#d1d1d1]">Create your account in seconds, no credit card required to start.</p>
+				</div>
+
+				<div class="text-center">
+					<div
+						class="w-16 h-16 bg-[#333333] rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+						2</div>
+					<h4 class="text-xl font-semibold">Configure Tasks</h4>
+					<p class="mt-2 text-[#d1d1d1]">Set up your API endpoint, payload, and schedule through our simple
+						interface.</p>
+				</div>
+
+				<div class="text-center">
+					<div
+						class="w-16 h-16 bg-[#333333] rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
+						3</div>
+					<h4 class="text-xl font-semibold">Let Us Handle It</h4>
+					<p class="mt-2 text-[#d1d1d1]">Sit back as we execute your scheduled tasks with precision.</p>
+				</div>
+			</div>
+
+			<div class="mt-12 text-center">
+				<a href="/sign-up"
+					class="px-6 py-3 bg-[#333333] text-foreground text-lg font-medium rounded-md hover:bg-[#3c3c3c] transition inline-block">Get
+					Started Now</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer -->
+	<footer class="bg-[#1c1c1c] py-12">
+		<div class="max-w-7xl mx-auto px-6">
+			<div class="flex flex-col md:flex-row justify-between items-center">
+				<div>
+					<h4 class="text-2xl font-bold">UpHit.me</h4>
+					<p class="mt-2 text-[#a0a0a0]">Job Scheduling for everybody!</p>
+				</div>
+
+				<div class="mt-6 md:mt-0">
+					<p class="text-[#a0a0a0]">© 2024 UpHit.me. All rights reserved.</p>
+				</div>
+			</div>
+		</div>
+	</footer>
+</div>
 {{ end }}
-

@@ -1,86 +1,111 @@
 {{ define "title" }}
-	Home
+  Home
 {{ end }}
 
 {{ define "tab" }}
-<div class="p-5 space-y-8">
+<div class="p-6 space-y-6">
   <!-- Stats Grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-    <div class="bg-white p-5 rounded-lg shadow-md text-center">
-      <div class="text-4xl font-semibold text-gray-800">120</div>
-      <div class="text-lg text-gray-600 mt-3">Total Tasks</div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-sm transition-shadow">
+      <div class="flex flex-col">
+        <div class="text-3xl font-medium text-gray-800">120</div>
+        <div class="text-sm font-medium text-gray-500 mt-1">Total Tasks</div>
+      </div>
     </div>
-    <div class="bg-white p-5 rounded-lg shadow-md text-center">
-      <div class="text-4xl font-semibold text-gray-800">95</div>
-      <div class="text-lg text-gray-600 mt-3">Succeeded</div>
+    <div class="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-sm transition-shadow">
+      <div class="flex flex-col">
+        <div class="text-3xl font-medium text-gray-800">95</div>
+        <div class="text-sm font-medium text-gray-500 mt-1">Succeeded</div>
+      </div>
     </div>
-    <div class="bg-white p-5 rounded-lg shadow-md text-center">
-      <div class="text-4xl font-semibold text-gray-800">15</div>
-      <div class="text-lg text-gray-600 mt-3">Failed</div>
+    <div class="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-sm transition-shadow">
+      <div class="flex flex-col">
+        <div class="text-3xl font-medium text-gray-800">15</div>
+        <div class="text-sm font-medium text-gray-500 mt-1">Failed</div>
+      </div>
     </div>
-    <div class="bg-white p-5 rounded-lg shadow-md text-center">
-      <div class="text-4xl font-semibold text-gray-800">10</div>
-      <div class="text-lg text-gray-600 mt-3">Pending</div>
+    <div class="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-sm transition-shadow">
+      <div class="flex flex-col">
+        <div class="text-3xl font-medium text-gray-800">10</div>
+        <div class="text-sm font-medium text-gray-500 mt-1">Pending</div>
+      </div>
     </div>
   </div>
 
   <!-- Task Success Rate Card -->
-  <div class="bg-white rounded-lg shadow-md">
-    <div class="bg-gray-100 p-5 rounded-t-lg">
-      <div class="text-xl font-semibold text-gray-800">Task Success Rate</div>
+  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+      <h3 class="text-base font-medium text-gray-800">Task Success Rate</h3>
+      <div class="flex items-center space-x-2">
+        <button class="p-1 rounded-md hover:bg-gray-100 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+          </svg>
+        </button>
+      </div>
     </div>
-    <div class="p-5 flex justify-center items-center h-56 border-t border-gray-200 text-gray-600">
-      <i class="fas fa-chart-pie mr-2"></i> Task Success Rate Chart
-    </div>
+    <div class="p-6 text-center text-gray-500 bg-[#fbfbfa]">Task Success Rate Chart</div>
   </div>
 
-  <!-- Recent Activity Card -->
-  <div class="bg-white rounded-lg shadow-md">
-    <div class="bg-gray-100 p-5 rounded-t-lg">
-      <div class="text-xl font-semibold text-gray-800">Recent Activity</div>
+  <!-- Recent Activity Table -->
+  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+      <h3 class="text-base font-medium text-gray-800">Recent Activity</h3>
+      <div class="flex items-center space-x-2">
+        <button class="p-1 rounded-md hover:bg-gray-100 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+          </svg>
+        </button>
+      </div>
     </div>
-    <div class="p-5">
-      <table class="min-w-full table-auto">
-        <thead>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-[#fbfbfa]">
           <tr>
-            <th class="px-4 py-2 text-left text-gray-700">Task</th>
-            <th class="px-4 py-2 text-left text-gray-700">Status</th>
-            <th class="px-4 py-2 text-left text-gray-700">Created</th>
-            <th class="px-4 py-2 text-left text-gray-700">Action</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Task</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
           </tr>
         </thead>
-        <tbody>
-          <tr class="border-b border-gray-200">
-            <td class="px-4 py-2">Daily Database Backup</td>
-            <td class="px-4 py-2">
-              <span class="inline-block px-3 py-1 text-xs font-semibold text-white bg-green-500 rounded-full">Succeeded</span>
+        <tbody class="bg-white divide-y divide-gray-100">
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Daily Database Backup</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                Succeeded
+              </span>
             </td>
-            <td class="px-4 py-2">Mar 30, 2025 3:04 PM</td>
-            <td class="px-4 py-2"><a href="#" class="text-blue-600 hover:underline">View</a></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mar 30, 2025 3:04 PM</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <a href="#" class="text-gray-600 hover:text-gray-900 hover:underline transition-colors">View</a>
+            </td>
           </tr>
-          <tr class="border-b border-gray-200">
-            <td class="px-4 py-2">Send Weekly Newsletter</td>
-            <td class="px-4 py-2">
-              <span class="inline-block px-3 py-1 text-xs font-semibold text-white bg-yellow-500 rounded-full">Pending</span>
+          <!-- Additional rows would go here -->
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Weekly Analytics Report</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                Pending
+              </span>
             </td>
-            <td class="px-4 py-2">Mar 29, 2025 10:15 AM</td>
-            <td class="px-4 py-2"><a href="#" class="text-blue-600 hover:underline">View</a></td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mar 30, 2025 1:30 PM</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <a href="#" class="text-gray-600 hover:text-gray-900 hover:underline transition-colors">View</a>
+            </td>
           </tr>
-          <tr class="border-b border-gray-200">
-            <td class="px-4 py-2">Update User Statistics</td>
-            <td class="px-4 py-2">
-              <span class="inline-block px-3 py-1 text-xs font-semibold text-white bg-red-500 rounded-full">Failed</span>
+          <tr class="hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">User Data Sync</td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                Failed
+              </span>
             </td>
-            <td class="px-4 py-2">Mar 28, 2025 8:30 PM</td>
-            <td class="px-4 py-2"><a href="#" class="text-blue-600 hover:underline">View</a></td>
-          </tr>
-          <tr>
-            <td class="px-4 py-2">Clean Temporary Files</td>
-            <td class="px-4 py-2">
-              <span class="inline-block px-3 py-1 text-xs font-semibold text-white bg-green-500 rounded-full">Succeeded</span>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mar 30, 2025 11:15 AM</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm">
+              <a href="#" class="text-gray-600 hover:text-gray-900 hover:underline transition-colors">View</a>
             </td>
-            <td class="px-4 py-2">Mar 28, 2025 2:00 PM</td>
-            <td class="px-4 py-2"><a href="#" class="text-blue-600 hover:underline">View</a></td>
           </tr>
         </tbody>
       </table>
@@ -88,13 +113,18 @@
   </div>
 
   <!-- Task Distribution Card -->
-  <div class="bg-white rounded-lg shadow-md">
-    <div class="bg-gray-100 p-5 rounded-t-lg">
-      <div class="text-xl font-semibold text-gray-800">Task Distribution</div>
+  <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+      <h3 class="text-base font-medium text-gray-800">Task Distribution</h3>
+      <div class="flex items-center space-x-2">
+        <button class="p-1 rounded-md hover:bg-gray-100 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+          </svg>
+        </button>
+      </div>
     </div>
-    <div class="p-5 flex justify-center items-center h-56 border-t border-gray-200 text-gray-600">
-      <i class="fas fa-chart-bar mr-2"></i> Task Distribution Chart
-    </div>
+    <div class="p-6 text-center text-gray-500 bg-[#fbfbfa]">Task Distribution Chart</div>
   </div>
 </div>
 {{ end }}

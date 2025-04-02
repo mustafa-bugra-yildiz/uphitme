@@ -1,226 +1,213 @@
 {{ define "title" }}
-	Sign Up
+Sign Up
 {{ end }}
 
 {{ define "content" }}
-	<div class="flex justify-center items-center min-h-screen p-5 bg-white">
-		<div class="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
-			<div class="text-center mb-8">
-				<h1 class="text-2xl font-semibold text-gray-900 mb-2">Create your account</h1>
-				<p class="text-sm text-gray-500">Sign up to start scheduling tasks with uphit.me</p>
+<div class="flex justify-center items-center min-h-screen p-5 bg-background text-foreground">
+	<div class="w-full max-w-md p-8 bg-[#1c1c1c] rounded-lg shadow-lg">
+		<div class="text-center mb-8">
+			<h1 class="text-2xl font-semibold mb-2">Create your account</h1>
+			<p class="text-sm text-[#d1d1d1]">Sign up to start scheduling tasks with uphit.me</p>
+		</div>
+
+		<form action="/sign-up" method="POST">
+			<div class="mb-5">
+				<label for="full-name" class="block mb-1.5 text-sm font-medium">Full Name</label>
+				<input type="text" id="full-name" name="full-name" value="{{ .fullName }}" required autocomplete="name"
+					class="w-full px-3 py-2.5 text-sm border border-[#333333] rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-[#3c3c3c] focus:border-[#3c3c3c]" />
+				<div class="text-xs text-red-500 mt-1 hidden" id="name-error">Please enter your full name</div>
 			</div>
 
-			<form action="/sign-up" method="POST">
-				<div class="mb-5">
-					<label for="full-name" class="block mb-1.5 text-sm font-medium text-gray-700">Full Name</label>
-					<input
-						type="text"
-						id="full-name"
-						name="full-name"
-						value="{{ .fullName }}"
-						required
-						autocomplete="name"
-						class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-					/>
-					<div class="text-xs text-red-600 mt-1 hidden" id="name-error">Please enter your full name</div>
+			<div class="mb-5">
+				<label for="email" class="block mb-1.5 text-sm font-medium">Email</label>
+				<input type="email" id="email" name="email" value="{{ .email }}" required autocomplete="email"
+					class="w-full px-3 py-2.5 text-sm border border-[#333333] rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-[#3c3c3c] focus:border-[#3c3c3c]" />
+				<div class="text-xs text-red-500 mt-1 hidden" id="email-error">Please enter a valid email address</div>
+			</div>
+
+			<div class="mb-5">
+				<label for="password" class="block mb-1.5 text-sm font-medium">Password</label>
+				<input type="password" id="password" name="password" required autocomplete="new-password"
+					class="w-full px-3 py-2.5 text-sm border border-[#333333] rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-[#3c3c3c] focus:border-[#3c3c3c]" />
+				<div class="text-xs text-[#d1d1d1] mt-1">
+					Password must contain:
+					<ul id="password-requirements-list" class="mt-1 list-disc pl-5">
+						<li id="req-length" class="requirement-not-met">
+							<span class="requirement-text">At least 8 characters</span>
+						</li>
+						<li id="req-uppercase" class="requirement-not-met">
+							<span class="requirement-text">At least one uppercase letter</span>
+						</li>
+						<li id="req-number" class="requirement-not-met">
+							<span class="requirement-text">At least one number</span>
+						</li>
+					</ul>
 				</div>
+			</div>
 
-				<div class="mb-5">
-					<label for="email" class="block mb-1.5 text-sm font-medium text-gray-700">Email</label>
-					<input
-						type="email"
-						id="email"
-						name="email"
-						value="{{ .email }}"
-						required
-						autocomplete="email"
-						class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-					/>
-					<div class="text-xs text-red-600 mt-1 hidden" id="email-error">Please enter a valid email address</div>
-				</div>
+			<div class="mb-5">
+				<label for="confirm-password" class="block mb-1.5 text-sm font-medium">Confirm
+					Password</label>
+				<input type="password" id="confirm-password" name="confirm-password" required
+					autocomplete="new-password"
+					class="w-full px-3 py-2.5 text-sm border border-[#333333] rounded-md bg-background text-foreground focus:outline-none focus:ring-1 focus:ring-[#3c3c3c] focus:border-[#3c3c3c]" />
+				<div class="text-xs text-red-500 mt-1 hidden" id="password-match-error">Passwords do not match</div>
+			</div>
 
-				<div class="mb-5">
-					<label for="password" class="block mb-1.5 text-sm font-medium text-gray-700">Password</label>
-					<input
-						type="password"
-						id="password"
-						name="password"
-						required
-						autocomplete="new-password"
-						class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-					/>
-					<div class="text-xs text-gray-500 mt-1">
-						Password must contain:
-						<ul id="password-requirements-list" class="mt-1 list-disc pl-5">
-							<li id="req-length" class="requirement-not-met">
-								<span class="requirement-text">At least 8 characters</span>
-							</li>
-							<li id="req-uppercase" class="requirement-not-met">
-								<span class="requirement-text">At least one uppercase letter</span>
-							</li>
-							<li id="req-number" class="requirement-not-met">
-								<span class="requirement-text">At least one number</span>
-							</li>
-						</ul>
-					</div>
-				</div>
+			{{ if .error }}
+			<div class="text-sm text-red-500 bg-[#2a1a1a] p-2 rounded-md mb-4 text-center">
+				{{ .error }}
+			</div>
+			{{ end }}
 
-				<div class="mb-5">
-					<label for="confirm-password" class="block mb-1.5 text-sm font-medium text-gray-700">Confirm Password</label>
-					<input
-						type="password"
-						id="confirm-password"
-						name="confirm-password"
-						required
-						autocomplete="new-password"
-						class="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-					/>
-					<div class="text-xs text-red-600 mt-1 hidden" id="password-match-error">Passwords do not match</div>
-				</div>
+			<button type="submit"
+				class="w-full py-3 bg-[#333333] hover:bg-[#3c3c3c] text-foreground text-sm font-medium rounded-md transition-colors">
+				Create Account
+			</button>
 
-				{{ if .error }}
-					<div class="text-sm text-red-600 bg-red-50 p-2 rounded-md mb-4 text-center">
-						{{ .error }}
-					</div>
-				{{ end }}
-
-				<button
-					type="submit"
-					class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors"
-				>
-					Create Account
-				</button>
-
-				<div class="mt-5 text-center text-sm text-gray-500">
-					Already have an account?
-					<a href="/sign-in" class="text-blue-600 hover:underline">
-						Sign in
-					</a>
-				</div>
-			</form>
-		</div>
+			<div class="mt-5 text-center text-sm text-[#d1d1d1]">
+				Already have an account?
+				<a href="/sign-in" class="text-foreground hover:underline">
+					Sign in
+				</a>
+			</div>
+		</form>
 	</div>
+</div>
 
-	<script>
-		// Form elements
-		const form = document.querySelector('form');
-		const fullNameInput = document.getElementById('full-name');
-		const emailInput = document.getElementById('email');
-		const passwordInput = document.getElementById('password');
-		const confirmPasswordInput = document.getElementById('confirm-password');
-		
-		// Error messages
-		const nameError = document.getElementById('name-error');
-		const emailError = document.getElementById('email-error');
-		const passwordMatchError = document.getElementById('password-match-error');
+<script>
+	// Form elements
+	const form = document.querySelector('form');
+	const fullNameInput = document.getElementById('full-name');
+	const emailInput = document.getElementById('email');
+	const passwordInput = document.getElementById('password');
+	const confirmPasswordInput = document.getElementById('confirm-password');
 
-		// Password requirement elements
-		const reqLength = document.getElementById('req-length');
-		const reqUppercase = document.getElementById('req-uppercase');
-		const reqNumber = document.getElementById('req-number');
+	// Error messages
+	const nameError = document.getElementById('name-error');
+	const emailError = document.getElementById('email-error');
+	const passwordMatchError = document.getElementById('password-match-error');
 
-		// SVG templates for check and x icons
-		const checkSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#38a169" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
-			<circle cx="12" cy="12" r="10" />
-			<polyline points="8 12 11 15 16 9" />
-		</svg>`;
-		
-		const xSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+	// Password requirement elements
+	const reqLength = document.getElementById('req-length');
+	const reqUppercase = document.getElementById('req-uppercase');
+	const reqNumber = document.getElementById('req-number');
+
+	// Add requirement icon elements
+	const requirementElements = document.querySelectorAll('.requirement-not-met');
+	requirementElements.forEach(element => {
+		const iconSpan = document.createElement('span');
+		iconSpan.className = 'requirement-icon inline-block mr-1';
+		iconSpan.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
 			<circle cx="12" cy="12" r="10" />
 			<line x1="15" y1="9" x2="9" y2="15" />
 			<line x1="9" y1="9" x2="15" y2="15" />
 		</svg>`;
+		element.prepend(iconSpan);
+	});
 
-		// Function to validate email
-		function validateEmail(email) {
-			const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-			return emailPattern.test(email);
+	// SVG templates for check and x icons
+	const checkSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#a3e635" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+		<circle cx="12" cy="12" r="10" />
+		<polyline points="8 12 11 15 16 9" />
+	</svg>`;
+
+	const xSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+		<circle cx="12" cy="12" r="10" />
+		<line x1="15" y1="9" x2="9" y2="15" />
+		<line x1="9" y1="9" x2="15" y2="15" />
+	</svg>`;
+
+	// Function to validate email
+	function validateEmail(email) {
+		const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		return emailPattern.test(email);
+	}
+
+	// Function to validate full name
+	function validateFullName(name) {
+		return name.trim().length >= 2; // At least 2 characters
+	}
+
+	// Function to check password requirements
+	function checkPasswordRequirements(password) {
+		// Check length requirement
+		if (password.length >= 8) {
+			reqLength.classList.remove('requirement-not-met');
+			reqLength.classList.add('requirement-met');
+			reqLength.querySelector('.requirement-icon').innerHTML = checkSvg;
+		} else {
+			reqLength.classList.remove('requirement-met');
+			reqLength.classList.add('requirement-not-met');
+			reqLength.querySelector('.requirement-icon').innerHTML = xSvg;
 		}
 
-		// Function to validate full name
-		function validateFullName(name) {
-			return name.trim().length >= 2; // At least 2 characters
+		// Check uppercase requirement
+		if (/[A-Z]/.test(password)) {
+			reqUppercase.classList.remove('requirement-not-met');
+			reqUppercase.classList.add('requirement-met');
+			reqUppercase.querySelector('.requirement-icon').innerHTML = checkSvg;
+		} else {
+			reqUppercase.classList.remove('requirement-met');
+			reqUppercase.classList.add('requirement-not-met');
+			reqUppercase.querySelector('.requirement-icon').innerHTML = xSvg;
 		}
 
-		// Function to check password requirements
-		function checkPasswordRequirements(password) {
-			// Check length requirement
-			if (password.length >= 8) {
-				reqLength.classList.remove('requirement-not-met');
-				reqLength.classList.add('requirement-met');
-				reqLength.querySelector('.requirement-icon').innerHTML = checkSvg;
+		// Check number requirement
+		if (/[0-9]/.test(password)) {
+			reqNumber.classList.remove('requirement-not-met');
+			reqNumber.classList.add('requirement-met');
+			reqNumber.querySelector('.requirement-icon').innerHTML = checkSvg;
+		} else {
+			reqNumber.classList.remove('requirement-met');
+			reqNumber.classList.add('requirement-not-met');
+			reqNumber.querySelector('.requirement-icon').innerHTML = xSvg;
+		}
+	}
+
+	// Function to check if passwords match
+	function checkPasswordsMatch() {
+		if (passwordInput.value && confirmPasswordInput.value) {
+			if (passwordInput.value !== confirmPasswordInput.value) {
+				passwordMatchError.style.display = 'block';
+				return false;
 			} else {
-				reqLength.classList.remove('requirement-met');
-				reqLength.classList.add('requirement-not-met');
-				reqLength.querySelector('.requirement-icon').innerHTML = xSvg;
-			}
-			
-			// Check uppercase requirement
-			if (/[A-Z]/.test(password)) {
-				reqUppercase.classList.remove('requirement-not-met');
-				reqUppercase.classList.add('requirement-met');
-				reqUppercase.querySelector('.requirement-icon').innerHTML = checkSvg;
-			} else {
-				reqUppercase.classList.remove('requirement-met');
-				reqUppercase.classList.add('requirement-not-met');
-				reqUppercase.querySelector('.requirement-icon').innerHTML = xSvg;
-			}
-			
-			// Check number requirement
-			if (/[0-9]/.test(password)) {
-				reqNumber.classList.remove('requirement-not-met');
-				reqNumber.classList.add('requirement-met');
-				reqNumber.querySelector('.requirement-icon').innerHTML = checkSvg;
-			} else {
-				reqNumber.classList.remove('requirement-met');
-				reqNumber.classList.add('requirement-not-met');
-				reqNumber.querySelector('.requirement-icon').innerHTML = xSvg;
+				passwordMatchError.style.display = 'none';
+				return true;
 			}
 		}
+		return true; // If either field is empty, don't show error yet
+	}
 
-		// Function to check if passwords match
-		function checkPasswordsMatch() {
-			if (passwordInput.value && confirmPasswordInput.value) {
-				if (passwordInput.value !== confirmPasswordInput.value) {
-					passwordMatchError.style.display = 'block';
-					return false;
-				} else {
-					passwordMatchError.style.display = 'none';
-					return true;
-				}
-			}
-			return true; // If either field is empty, don't show error yet
+	// Add event listeners for real-time validation
+	fullNameInput.addEventListener('input', function () {
+		if (this.value && !validateFullName(this.value)) {
+			nameError.style.display = 'block';
+		} else {
+			nameError.style.display = 'none';
 		}
+	});
 
-		// Add event listeners for real-time validation
-		fullNameInput.addEventListener('input', function() {
-			if (this.value && !validateFullName(this.value)) {
-				nameError.style.display = 'block';
-			} else {
-				nameError.style.display = 'none';
-			}
-		});
+	passwordInput.addEventListener('input', function () {
+		checkPasswordRequirements(this.value);
+	});
 
-		passwordInput.addEventListener('input', function() {
-			checkPasswordRequirements(this.value);
-		});
+	confirmPasswordInput.addEventListener('input', function () {
+		checkPasswordsMatch();
+	});
 
-		confirmPasswordInput.addEventListener('input', function() {
-			checkPasswordsMatch();
-		});
+	// Prevent form submission if validation fails
+	form.addEventListener('submit', function (event) {
+		event.preventDefault();
 
-		// Prevent form submission if validation fails
-		form.addEventListener('submit', function(event) {
-			event.preventDefault();
-
-			const isEmailValid = validateEmail(emailInput.value);
-			const isFullNameValid = validateFullName(fullNameInput.value);
-			const arePasswordsValid = checkPasswordsMatch();
-			if (isEmailValid && isFullNameValid && arePasswordsValid) {
-				form.submit(); // Submit form if all checks pass
-			} else {
-				// Handle invalid form submission (e.g., show errors)
-			}
-		});
-	</script>
+		const isEmailValid = validateEmail(emailInput.value);
+		const isFullNameValid = validateFullName(fullNameInput.value);
+		const arePasswordsValid = checkPasswordsMatch();
+		if (isEmailValid && isFullNameValid && arePasswordsValid) {
+			form.submit(); // Submit form if all checks pass
+		} else {
+			// Handle invalid form submission (e.g., show errors)
+		}
+	});
+</script>
 {{ end }}

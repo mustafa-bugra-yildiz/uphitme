@@ -14,9 +14,9 @@ import (
 var htmlFiles embed.FS
 
 var (
-	landing       *template.Template
+	landing *template.Template
 
-	signIn        *template.Template
+	signIn *template.Template
 
 	signUp        *template.Template
 	signUpSuccess *template.Template
@@ -55,6 +55,9 @@ func Setup(tailwind string) {
 
 	signIn = template.Must(t.Clone())
 	signIn = template.Must(signIn.ParseFS(htmlFiles, "sign-in.html"))
+
+	signUp = template.Must(t.Clone())
+	signUp = template.Must(signUp.ParseFS(htmlFiles, "sign-up.html"))
 
 	signUpSuccess = template.Must(t.Clone())
 	signUpSuccess = template.Must(signUpSuccess.ParseFS(htmlFiles, "sign-up-success.html"))
