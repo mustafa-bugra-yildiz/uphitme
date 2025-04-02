@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"io"
 
+	"github.com/mustafa-bugra-yildiz/uphitme/repos/task"
 	"github.com/mustafa-bugra-yildiz/uphitme/repos/user"
 )
 
@@ -12,10 +13,10 @@ import (
 var htmlFiles embed.FS
 
 type Dashboard struct {
-	home *template.Template
-	scheduler *template.Template
+	home         *template.Template
+	scheduler    *template.Template
 	billingUsage *template.Template
-	profile *template.Template
+	profile      *template.Template
 }
 
 func New(t *template.Template) *Dashboard {
@@ -39,10 +40,10 @@ func New(t *template.Template) *Dashboard {
 
 	// done
 	return &Dashboard{
-		home: home,
-		scheduler: scheduler,
+		home:         home,
+		scheduler:    scheduler,
 		billingUsage: billingUsage,
-		profile: profile,
+		profile:      profile,
 	}
 }
 
@@ -53,10 +54,11 @@ func (d *Dashboard) Home(w io.Writer, user *user.User) error {
 	})
 }
 
-func (d *Dashboard) Scheduler(w io.Writer, user *user.User) error {
+func (d *Dashboard) Scheduler(w io.Writer, user *user.User, tasks []task.Task) error {
 	return d.scheduler.ExecuteTemplate(w, "layout", map[string]any{
-		"user": user,
-		"tab":  "scheduler",
+		"user":  user,
+		"tab":   "scheduler",
+		"tasks": tasks,
 	})
 }
 

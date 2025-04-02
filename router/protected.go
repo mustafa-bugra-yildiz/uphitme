@@ -26,7 +26,13 @@ func (s state) dashboardSchedulerHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	err = view.Dashboard.Scheduler(w, user)
+	tasks, err := s.taskRepo.List(r.Context(), 1, 10)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	err = view.Dashboard.Scheduler(w, user, tasks)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

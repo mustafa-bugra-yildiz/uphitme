@@ -68,7 +68,12 @@ func (a *Auth) Verify(r *http.Request) (*Claims, error) {
 
 func (a *Auth) Login(w http.ResponseWriter, u user.User) error {
 	now := jwt.NumericDate{Time: time.Now()}
+
 	expiresAt := jwt.NumericDate{Time: time.Now().Add(time.Hour)}
+	if env.Env == env.Dev {
+		expiresAt = jwt.NumericDate{Time: time.Now().Add(24 * time.Hour)}
+	}
+
 	claims := Claims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "uphit.me",
