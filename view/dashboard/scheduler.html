@@ -3,133 +3,133 @@ Scheduler
 {{ end }}
 
 {{ define "tab" }}
-<div class="py-6 space-y-6 text-foreground w-full">
-  <!-- Task List -->
-  <div class="overflow-hidden">
-    <div class="flex items-center justify-between px-6 py-4 border-b border-[#333333] bg-[#242424]">
-      <h3 class="text-base font-medium">Your Tasks</h3>
-      <div class="flex items-center space-x-2">
-        <a href="/docs/scheduling"
-          class="text-[#d1d1d1] hover:text-foreground flex items-center gap-1 text-sm transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          API Docs
-        </a>
+<div class="h-full w-full flex items-center justify-center">
+  {{ if .tasks }}
+  <div class="py-6 space-y-6 text-foreground w-full">
+    <!-- Task List -->
+    <div class="overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-[#333333] bg-[#242424]">
+        <h3 class="text-base font-medium">Your Tasks</h3>
+        <div class="flex items-center space-x-2">
+          <a href="/docs/scheduling"
+            class="text-[#d1d1d1] hover:text-foreground flex items-center gap-1 text-sm transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            API Docs
+          </a>
+        </div>
       </div>
-    </div>
 
-    <div class="divide-y divide-[#333333] flex-1">
-      {{ if .tasks }}
-      {{ range .tasks }}
-      <!-- Task Item -->
-      <div class="p-6">
-        <div class="flex flex-col sm:flex-row justify-between w-full mb-4">
-          <div class="flex flex-col gap-1">
-            <p class="font-medium text-[#d1d1d1]">{{ .Title }}</p>
-            <p class="text-sm text-[#a0a0a0]">{{ .Target.String }}</p>
+      <div class="divide-y divide-[#333333] flex-1">
+        {{ range .tasks }}
+        <!-- Task Item -->
+        <div class="p-6">
+          <div class="flex flex-col sm:flex-row justify-between w-full mb-4">
+            <div class="flex flex-col gap-1">
+              <p class="font-medium text-[#d1d1d1]">{{ .Title }}</p>
+              <p class="text-sm text-[#a0a0a0]">{{ .Target.String }}</p>
+            </div>
+            <div class="text-right text-xs text-[#a0a0a0] mt-2 sm:mt-0">
+              <p class="flex items-center justify-end gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Created: {{ .CreatedAt.Format "Jan 2, 2006 3:04 PM" }}
+              </p>
+              <p class="flex items-center justify-end gap-1.5 mt-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Last Run: {{ .UpdatedAt.Format "Jan 2, 2006 3:04 PM" }}
+              </p>
+            </div>
           </div>
-          <div class="text-right text-xs text-[#a0a0a0] mt-2 sm:mt-0">
-            <p class="flex items-center justify-end gap-1.5">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Created: {{ .CreatedAt.Format "Jan 2, 2006 3:04 PM" }}
-            </p>
-            <p class="flex items-center justify-end gap-1.5 mt-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Last Run: {{ .UpdatedAt.Format "Jan 2, 2006 3:04 PM" }}
-            </p>
+
+          <!-- Request Payload -->
+          <div class="mt-4">
+            <p class="text-xs font-medium text-[#a0a0a0] uppercase tracking-wider mb-2">Request Payload</p>
+            <div class="bg-[#1c1c1c] border border-[#333333] rounded-md p-3 overflow-x-auto">
+              <pre class="text-xs font-mono text-[#d1d1d1]">{{ jsonMarshalIndent .Payload }}</pre>
+            </div>
           </div>
-        </div>
 
-        <!-- Request Payload -->
-        <div class="mt-4">
-          <p class="text-xs font-medium text-[#a0a0a0] uppercase tracking-wider mb-2">Request Payload</p>
-          <div class="bg-[#1c1c1c] border border-[#333333] rounded-md p-3 overflow-x-auto">
-            <pre class="text-xs font-mono text-[#d1d1d1]">{{ jsonMarshalIndent .Payload }}</pre>
+          <!-- Status Content -->
+          {{ if eq .Status "failed" }}
+          <div class="mt-4 bg-[#2c2a20] border border-[#3b3a2b] text-[#ffd54f] p-3 rounded-md text-sm">
+            <p><span class="font-medium">Error:</span> {{ .Error }}</p>
           </div>
-        </div>
+          {{ end }}
 
-        <!-- Status Content -->
-        {{ if eq .Status "failed" }}
-        <div class="mt-4 bg-[#2c2a20] border border-[#3b3a2b] text-[#ffd54f] p-3 rounded-md text-sm">
-          <p><span class="font-medium">Error:</span> {{ .Error }}</p>
-        </div>
-        {{ end }}
+          {{ if eq .Status "succeeded" }}
+          <div class="mt-4 bg-[#263238] border border-[#304047] text-[#80cbc4] p-3 rounded-md text-sm">
+            <p><span class="font-medium">Response:</span> {{ .Code }} OK</p>
+            {{ if .Body }}
+            <div class="bg-[#1c1c1c] border border-[#333333] rounded-md mt-2 p-3 overflow-x-auto">
+              <pre class="text-xs font-mono text-[#d1d1d1]">{{ jsonMarshalIndent .Body }}</pre>
+            </div>
+            {{ end }}
+          </div>
+          {{ end }}
 
-        {{ if eq .Status "succeeded" }}
-        <div class="mt-4 bg-[#263238] border border-[#304047] text-[#80cbc4] p-3 rounded-md text-sm">
-          <p><span class="font-medium">Response:</span> {{ .Code }} OK</p>
-          {{ if .Body }}
-          <div class="bg-[#1c1c1c] border border-[#333333] rounded-md mt-2 p-3 overflow-x-auto">
-            <pre class="text-xs font-mono text-[#d1d1d1]">{{ jsonMarshalIndent .Body }}</pre>
+          {{ if eq .Status "pending" }}
+          <div class="mt-4 bg-[#1e293b] border border-[#2d3748] text-[#94a3b8] p-3 rounded-md text-sm">
+            <p><span class="font-medium">Status:</span> Pending - Waiting for next execution</p>
           </div>
           {{ end }}
         </div>
         {{ end }}
-
-        {{ if eq .Status "pending" }}
-        <div class="mt-4 bg-[#1e293b] border border-[#2d3748] text-[#94a3b8] p-3 rounded-md text-sm">
-          <p><span class="font-medium">Status:</span> Pending - Waiting for next execution</p>
-        </div>
-        {{ end }}
       </div>
-      {{ end }}
-      {{ else }}
-      <!-- Empty State -->
-      <div class="p-12 flex flex-col items-center justify-center text-center self-center justify-self-center">
-        <div class="w-16 h-16 mb-4 rounded-full bg-[#242424] flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+
+      <!-- Pagination - only show if there are tasks -->
+      <div class="flex justify-between items-center px-6 py-4 border-t border-[#333333] text-sm">
+        <a href="/dashboard/scheduler?page=1"
+          class="text-[#d1d1d1] hover:text-foreground flex items-center gap-1 hover:underline transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
           </svg>
-        </div>
-        <h3 class="text-lg font-medium text-[#d1d1d1] mb-2">No Tasks Scheduled Yet!</h3>
-        <p class="text-[#a0a0a0] mb-6 max-w-md">You can create tasks using our API. Check the documentation to learn how
-          to schedule tasks.</p>
-        <a href="/docs/scheduling"
-          class="inline-flex items-center px-4 py-2 bg-[#333333] hover:bg-[#444444] text-[#d1d1d1] rounded-md text-sm font-medium transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          Previous
+        </a>
+        <p class="text-[#a0a0a0]">Page 1</p>
+        <a href="/dashboard/scheduler?page=2"
+          class="text-[#d1d1d1] hover:text-foreground flex items-center gap-1 hover:underline transition-colors">
+          Next
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
-          Read API Documentation
         </a>
       </div>
-      {{ end }}
     </div>
-
-    <!-- Pagination - only show if there are tasks -->
-    {{ if .tasks }}
-    <div class="flex justify-between items-center px-6 py-4 border-t border-[#333333] text-sm">
-      <a href="/dashboard/scheduler?page=1"
-        class="text-[#d1d1d1] hover:text-foreground flex items-center gap-1 hover:underline transition-colors">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-        Previous
-      </a>
-      <p class="text-[#a0a0a0]">Page 1</p>
-      <a href="/dashboard/scheduler?page=2"
-        class="text-[#d1d1d1] hover:text-foreground flex items-center gap-1 hover:underline transition-colors">
-        Next
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </a>
-    </div>
-    {{ end }}
   </div>
+  {{ else }}
+  <!-- Empty State -->
+  <div class="min-h-dvh flex flex-col items-center justify-center text-center p-6">
+    <div class="w-16 h-16 mb-4 rounded-full bg-[#242424] flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-[#a0a0a0]" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <h3 class="text-lg font-medium text-[#d1d1d1] mb-2">No Tasks Scheduled Yet!</h3>
+    <p class="text-[#a0a0a0] mb-6 max-w-md">You can create tasks using our API. Check the documentation to learn how
+      to schedule tasks.</p>
+    <a href="/docs/scheduling"
+      class="inline-flex items-center px-4 py-2 bg-[#333333] hover:bg-[#444444] text-[#d1d1d1] rounded-md text-sm font-medium transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      Read API Documentation
+    </a>
+  </div>
+  {{ end }}
 </div>
 {{ end }}
